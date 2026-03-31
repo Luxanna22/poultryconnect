@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ title }} — PoultryConnect{% endblock %}</title>
+    <meta name="description" content="PoultryConnect — Smart poultry farm management dashboard.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<div class="dash-shell">
+
+    <!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+    <aside class="dash-sidebar" id="dashSidebar">
+
+        <div class="sidebar-logo">
+            <a href="{{ url_for('index') }}" title="Back to PoultryConnect home">
+                <span class="sidebar-logo-dot"></span>
+                Poultry<span>Connect</span>
+            </a>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <p class="sidebar-section-label">Overview</p>
+
+            <a href="{{ url_for('dashboard.farmer') }}"
+               class="nav-item {% if request.endpoint == 'dashboard.farmer' %}active{% endif %}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+                Dashboard
+            </a>
+
+            <p class="sidebar-section-label">Farm Operations</p>
+
+            <a href="{{ url_for('production.index') }}"
+               class="nav-item {% if request.blueprint == 'production' %}active{% endif %}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10"/>
+                    <line x1="12" y1="20" x2="12" y2="4"/>
+                    <line x1="6"  y1="20" x2="6"  y2="14"/>
+                    <line x1="2"  y1="20" x2="22" y2="20"/>
+                </svg>
+                Production Log
+            </a>
+
+            <a href="{{ url_for('analytics.index') }}"
+               class="nav-item {% if request.blueprint == 'analytics' %}active{% endif %}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                    <polyline points="17 6 23 6 23 12"/>
+                </svg>
+                Analytics
+            </a>
+
+            <p class="sidebar-section-label">Market</p>
+
+            <a href="{{ url_for('marketplace.index') }}"
+               class="nav-item {% if request.blueprint == 'marketplace' %}active{% endif %}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <path d="M16 10a4 4 0 01-8 0"/>
+                </svg>
+                Marketplace
+            </a>
+
+            <a href="{{ url_for('community.index') }}"
+               class="nav-item {% if request.blueprint == 'community' %}active{% endif %}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 010 7.75"/>
+                </svg>
+                Community
+            </a>
+
+            <p class="sidebar-section-label">Other</p>
+
+            <a href="{{ url_for('index') }}" class="nav-item">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="2" y1="12" x2="22" y2="12"/>
+                    <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+                </svg>
+                Back to Landing
+            </a>
+
+        </nav>
+
+        <!-- User footer -->
+        <div class="sidebar-user">
+            <div class="sidebar-user-avatar">
+                {{ current_user.first_name[0]|upper if current_user.first_name else current_user.username[0]|upper }}
+            </div>
+            <div class="sidebar-user-info">
+                <div class="sidebar-user-name">{{ current_user.full_name }}</div>
+                <div class="sidebar-user-role">{{ current_user.role.value|replace('_',' ')|title }}</div>
+            </div>
+            <a href="{{ url_for('auth.logout') }}" class="sidebar-logout" title="Sign out">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+                    <polyline points="16 17 21 12 16 7"/>
+                    <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+            </a>
+        </div>
+
+    </aside>
+
+    <!-- ═══════════════════ MAIN ═══════════════════ -->
+    <main class="dash-main">
+
+        <!-- Top Bar -->
+        <div class="dash-topbar">
+            <div>
+                <div class="topbar-page-title">{% block page_title %}Dashboard{% endblock %}</div>
+                <div class="topbar-breadcrumb">{% block breadcrumb %}PoultryConnect / Farmer{% endblock %}</div>
+            </div>
+            <div class="topbar-actions">
+                <span class="topbar-date" id="topbarDate"></span>
+                {% block topbar_actions %}{% endblock %}
+            </div>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="dash-content" style="padding-bottom:0; padding-top:1rem;">
+                    <div class="dash-flash-wrap">
+                        {% for category, message in messages %}
+                            <div class="dash-flash {{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Page Content -->
+        <div class="dash-content">
+            {% block content %}{% endblock %}
+        </div>
+
+    </main>
+
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+    // Live date in topbar
+    const d = new Date();
+    const opts = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+    const el = document.getElementById('topbarDate');
+    if (el) el.textContent = d.toLocaleDateString('en-US', opts);
+</script>
+
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>

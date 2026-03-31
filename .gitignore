@@ -18,3 +18,5 @@ migrations/
 dist/
 build/
 *.egg-info/
+PRD.md
+design-config.md

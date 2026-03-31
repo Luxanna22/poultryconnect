@@ -1,31 +1,108 @@
-{% extends "base.html" %}
+{% extends "auth_base.html" %}
 
-{% block content %}
-    <div class="card" style="max-width: 400px; margin: 2rem auto;">
-        <h1>Register</h1>
-        <form action="" method="post">
-            <div style="margin-bottom:1rem;">
-                <label for="username">Username</label><br>
-                <input type="text" id="username" name="username" style="width:100%; border-radius:4px; padding:8px; border:1px solid #444; background:#222; color:white;">
-            </div>
-            <div style="margin-bottom:1rem;">
-                <label for="email">Email</label><br>
-                <input type="email" id="email" name="email" style="width:100%; border-radius:4px; padding:8px; border:1px solid #444; background:#222; color:white;">
-            </div>
-            <div style="margin-bottom:1rem;">
-                <label for="password">Password</label><br>
-                <input type="password" id="password" name="password" style="width:100%; border-radius:4px; padding:8px; border:1px solid #444; background:#222; color:white;">
-            </div>
-            <div style="margin-bottom:1rem;">
-                <label for="role">Role</label><br>
-                <select name="role" style="width:100%; border-radius:4px; padding:8px; border:1px solid #444; background:#222; color:white;">
-                    <option value="Farmer">Farmer</option>
-                    <option value="Staff">Staff</option>
-                    <option value="Buyer">Buyer</option>
-                </select>
-            </div>
-            <p><input type="submit" value="Register" class="btn btn-primary"></p>
-        </form>
-        <p>Already have an account? <a href="{{ url_for('auth.login') }}">Click to Login!</a></p>
+{% block title %}Create Account — PoultryConnect{% endblock %}
+
+{% block form_content %}
+
+<h2 class="auth-form-title">Create your account</h2>
+<p class="auth-form-subtitle">
+    Already registered?
+    <a href="{{ url_for('auth.login') }}">Sign in instead</a>
+</p>
+
+<form method="POST" action="{{ url_for('auth.register') }}" novalidate>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label for="first_name">First Name</label>
+            <input
+                type="text"
+                id="first_name"
+                name="first_name"
+                placeholder="Juan"
+                value="{{ form_data.get('first_name', '') }}"
+                required
+            >
+        </div>
+        <div class="form-group">
+            <label for="last_name">Last Name</label>
+            <input
+                type="text"
+                id="last_name"
+                name="last_name"
+                placeholder="dela Cruz"
+                value="{{ form_data.get('last_name', '') }}"
+                required
+            >
+        </div>
     </div>
+
+    <div class="form-group">
+        <label for="email">Email Address</label>
+        <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="you@example.com"
+            value="{{ form_data.get('email', '') }}"
+            autocomplete="email"
+            required
+        >
+    </div>
+
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Choose a unique username"
+            value="{{ form_data.get('username', '') }}"
+            autocomplete="username"
+            required
+        >
+    </div>
+
+    <div class="form-group">
+        <label for="role">I am a...</label>
+        <div class="select-wrap">
+            <select id="role" name="role" required>
+                <option value="" disabled {% if not form_data.get('role') %}selected{% endif %}>Select your role</option>
+                <option value="farmer"       {% if form_data.get('role') == 'farmer'       %}selected{% endif %}>Farmer</option>
+                <option value="buyer"        {% if form_data.get('role') == 'buyer'        %}selected{% endif %}>Buyer</option>
+                <option value="feed_supplier"{% if form_data.get('role') == 'feed_supplier'%}selected{% endif %}>Feed Supplier</option>
+                <option value="veterinarian" {% if form_data.get('role') == 'veterinarian' %}selected{% endif %}>Veterinarian</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Min. 8 characters"
+                autocomplete="new-password"
+                required
+            >
+        </div>
+        <div class="form-group">
+            <label for="confirm_password">Confirm Password</label>
+            <input
+                type="password"
+                id="confirm_password"
+                name="confirm_password"
+                placeholder="Repeat password"
+                autocomplete="new-password"
+                required
+            >
+        </div>
+    </div>
+
+    <button type="submit" class="btn-auth" style="margin-top: 0.25rem;">Create My Account</button>
+
+</form>
+
 {% endblock %}

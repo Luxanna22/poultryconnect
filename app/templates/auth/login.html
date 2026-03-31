@@ -1,20 +1,49 @@
-{% extends "base.html" %}
+{% extends "auth_base.html" %}
 
-{% block content %}
-    <div class="card" style="max-width: 400px; margin: 2rem auto;">
-        <h1>Sign In</h1>
-        <form action="" method="post">
-            <div style="margin-bottom:1rem;">
-                <label for="username">Username</label><br>
-                <input type="text" id="username" name="username" style="width:100%; border-radius:4px; padding:8px; border:1px solid #444; background:#222; color:white;">
-            </div>
-            <div style="margin-bottom:1rem;">
-                <label for="password">Password</label><br>
-                <input type="password" id="password" name="password" style="width:100%; border-radius:4px; padding:8px; border:1px solid #444; background:#222; color:white;">
-            </div>
-            <p><input type="checkbox" name="remember"> Remember Me</p>
-            <p><input type="submit" value="Sign In" class="btn btn-primary"></p>
-        </form>
-        <p>New User? <a href="{{ url_for('auth.register') }}">Click to Register!</a></p>
+{% block title %}Sign In — PoultryConnect{% endblock %}
+
+{% block form_content %}
+
+<h2 class="auth-form-title">Welcome back</h2>
+<p class="auth-form-subtitle">
+    Don't have an account?
+    <a href="{{ url_for('auth.register') }}">Create one here</a>
+</p>
+
+<form method="POST" action="{{ url_for('auth.login') }}" novalidate>
+
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Enter your username"
+            value="{{ request.form.get('username', '') }}"
+            autocomplete="username"
+            required
+        >
     </div>
+
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            required
+        >
+    </div>
+
+    <div class="remember-row">
+        <input type="checkbox" id="remember" name="remember">
+        <label for="remember">Keep me signed in</label>
+    </div>
+
+    <button type="submit" class="btn-auth">Sign In to PoultryConnect</button>
+
+</form>
+
 {% endblock %}

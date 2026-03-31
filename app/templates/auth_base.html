@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ title }} — PoultryConnect{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<div class="auth-page">
+
+    <!-- ── Brand Panel (left) ──────────────────────── -->
+    <div class="auth-brand">
+        <div class="brand-mesh"></div>
+
+        <a href="{{ url_for('index') }}" class="brand-logo">
+            <span class="brand-logo-dot"></span>
+            Poultry<span>Connect</span>
+        </a>
+
+        <h1 class="brand-heading">
+            Farm Smarter.<br>
+            Sell <em>Directly.</em><br>
+            Grow Together.
+        </h1>
+
+        <p class="brand-sub">
+            PoultryConnect gives smallholder farmers the tools to track production,
+            predict trends, reach buyers, and build a stronger farming community — all in one place.
+        </p>
+
+        <ul class="brand-features">
+            <li><span class="feat-dot"></span> Daily egg &amp; feed production tracking</li>
+            <li><span class="feat-dot"></span> Automated profit/loss analytics</li>
+            <li><span class="feat-dot"></span> Direct marketplace access</li>
+            <li><span class="feat-dot"></span> Connect with vets and suppliers</li>
+        </ul>
+    </div>
+
+    <!-- ── Form Panel (right) ─────────────────────── -->
+    <div class="auth-form-panel">
+
+        <!-- Always-visible top nav strip -->
+        <div class="auth-topnav">
+            <a href="{{ url_for('index') }}" class="auth-back-link">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"/>
+                </svg>
+                Back to Home
+            </a>
+        </div>
+
+        <div class="auth-form-wrap">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul class="flash-list">
+                        {% for category, message in messages %}
+                            <li class="flash-item {{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+
+            {% block form_content %}{% endblock %}
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

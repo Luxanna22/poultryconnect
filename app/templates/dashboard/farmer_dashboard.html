@@ -1,0 +1,351 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Farmer Dashboard — PoultryConnect{% endblock %}
+{% block page_title %}Farmer Dashboard{% endblock %}
+{% block breadcrumb %}PoultryConnect / Farmer / Overview{% endblock %}
+
+{% block topbar_actions %}
+    <a href="{{ url_for('production.index') }}" class="btn btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Log Today
+    </a>
+{% endblock %}
+
+{% block content %}
+
+<!-- ── Welcome Header ─────────────────────────────── -->
+<div class="section-header">
+    <h2>Good day, {{ current_user.first_name or current_user.username }}.</h2>
+    <p>Here's a summary of your farm operations for {{ today.strftime('%B %Y') }}.</p>
+</div>
+
+<!-- ── Farm Chips ─────────────────────────────────── -->
+{% if farms %}
+<div class="farms-chips">
+    {% for farm in farms %}
+    <div class="farm-chip">
+        <span class="farm-chip-dot"></span>
+        {{ farm.name }}
+        {% if farm.location %}<span style="color: var(--text-muted); font-weight:400;">· {{ farm.location }}</span>{% endif %}
+    </div>
+    {% endfor %}
+    <a href="{{ url_for('production.index') }}" class="farm-chip add-chip">
+        + Add Farm
+    </a>
+</div>
+{% endif %}
+
+<!-- ── KPI Cards ──────────────────────────────────── -->
+<div class="kpi-grid">
+
+    <!-- Eggs This Month -->
+    <div class="kpi-card" data-accent="yellow">
+        <div class="kpi-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <ellipse cx="12" cy="13" rx="7" ry="9"/>
+            </svg>
+        </div>
+        <div class="kpi-label">Eggs Collected</div>
+        <div class="kpi-value">{{ "{:,}".format(eggs_this_month) }}</div>
+        <div class="kpi-sub">This month · <span class="positive">active tracking</span></div>
+    </div>
+
+    <!-- Active Farms -->
+    <div class="kpi-card" data-accent="green">
+        <div class="kpi-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+        </div>
+        <div class="kpi-label">Active Farms</div>
+        <div class="kpi-value">{{ farms_count }}</div>
+        <div class="kpi-sub">
+            {% if farms_count == 0 %}
+                <span class="negative">No farms registered</span>
+            {% elif farms_count == 1 %}
+                1 farm registered
+            {% else %}
+                {{ farms_count }} farms registered
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Total Expenses -->
+    <div class="kpi-card" data-accent="red">
+        <div class="kpi-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+            </svg>
+        </div>
+        <div class="kpi-label">Total Expenses</div>
+        <div class="kpi-value">&#8369;{{ "{:,.0f}".format(expenses_this_month) }}</div>
+        <div class="kpi-sub">This month · all categories</div>
+    </div>
+
+    <!-- Pending Orders placeholder -->
+    <div class="kpi-card" data-accent="blue">
+        <div class="kpi-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+            </svg>
+        </div>
+        <div class="kpi-label">Pending Orders</div>
+        <div class="kpi-value">—</div>
+        <div class="kpi-sub">Marketplace module coming soon</div>
+    </div>
+
+</div>
+
+<!-- ── Charts Row ─────────────────────────────────── -->
+<div class="charts-row">
+
+    <!-- 7-Day Production Chart -->
+    <div class="chart-card">
+        <div class="chart-card-header">
+            <div>
+                <div class="chart-card-title">Egg Production — Last 7 Days</div>
+                <div class="chart-card-sub">Daily egg count across all your farms</div>
+            </div>
+            <span class="chart-tag">7-day trend</span>
+        </div>
+        <div class="chart-container">
+            <canvas id="productionChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Expense Breakdown Donut -->
+    <div class="chart-card">
+        <div class="chart-card-header">
+            <div>
+                <div class="chart-card-title">Expense Breakdown</div>
+                <div class="chart-card-sub">This month by category</div>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="expenseChart"></canvas>
+        </div>
+    </div>
+
+</div>
+
+<!-- ── Bottom Row ─────────────────────────────────── -->
+<div class="bottom-row">
+
+    <!-- Quick Log Widget -->
+    <div class="quick-log-card">
+        <div class="quick-log-title">Quick Daily Log</div>
+        <div class="quick-log-sub">Record today's production in seconds</div>
+
+        {% if farms %}
+        <form class="ql-form" method="POST" action="{{ url_for('production.index') }}">
+
+            <div class="ql-field">
+                <label for="ql-farm">Farm</label>
+                <select id="ql-farm" name="farm_id" required>
+                    {% for farm in farms %}
+                        <option value="{{ farm.id }}">{{ farm.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="ql-field">
+                <label for="ql-eggs">Eggs Collected</label>
+                <input type="number" id="ql-eggs" name="egg_count" min="0" placeholder="e.g. 240" required>
+            </div>
+
+            <div class="ql-field">
+                <label for="ql-feed">Feed Used (kg)</label>
+                <input type="number" id="ql-feed" name="feed_kg" min="0" step="0.1" placeholder="e.g. 12.5">
+            </div>
+
+            <div class="ql-field">
+                <label for="ql-mortality">Mortality</label>
+                <input type="number" id="ql-mortality" name="mortality" min="0" value="0">
+            </div>
+
+            <input type="hidden" name="record_date" value="{{ today.isoformat() }}">
+
+            <button type="submit" class="btn-log">Submit Today's Log</button>
+        </form>
+        {% else %}
+        <div class="no-farm-notice">
+            You have no farms registered yet.<br>
+            <a href="{{ url_for('production.index') }}">Register your first farm</a> to start logging.
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Recent Production Records -->
+    <div class="recent-card">
+        <div class="recent-header">
+            <div class="recent-title">Recent Production Records</div>
+            <a href="{{ url_for('production.index') }}" class="recent-link">View All</a>
+        </div>
+
+        {% if recent_records %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Farm</th>
+                    <th>Eggs</th>
+                    <th>Feed (kg)</th>
+                    <th>Mortality</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rec in recent_records %}
+                <tr>
+                    <td>
+                        <div>{{ rec.record_date.strftime('%b %d, %Y') }}</div>
+                    </td>
+                    <td class="muted">{{ farm_map.get(rec.farm_id, '—') }}</td>
+                    <td>
+                        <span class="badge badge-eggs">{{ "{:,}".format(rec.egg_count) }}</span>
+                    </td>
+                    <td class="muted">{{ rec.feed_kg or '—' }}</td>
+                    <td class="muted">
+                        {% if rec.mortality and rec.mortality > 0 %}
+                            <span style="color: var(--error); font-weight: 600;">{{ rec.mortality }}</span>
+                        {% else %}
+                            0
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted); margin: 0 auto;">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <line x1="3" y1="9" x2="21" y2="9"/>
+                <line x1="9" y1="21" x2="9" y2="9"/>
+            </svg>
+            <p>No production records yet. Use the quick log to add your first entry.</p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+// ── 7-Day Production Line Chart ───────────────────────
+const prodCtx = document.getElementById('productionChart').getContext('2d');
+
+const prodLabels = {{ chart_labels | tojson }};
+const prodData   = {{ chart_data | tojson }};
+
+new Chart(prodCtx, {
+    type: 'line',
+    data: {
+        labels: prodLabels,
+        datasets: [{
+            label: 'Eggs Collected',
+            data: prodData,
+            borderColor: '#0d631b',
+            backgroundColor: 'rgba(13, 99, 27, 0.08)',
+            borderWidth: 2.5,
+            pointBackgroundColor: '#0d631b',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            fill: true,
+            tension: 0.4,
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                backgroundColor: '#ffffff',
+                borderColor: '#daedf7',
+                borderWidth: 1,
+                titleColor: '#001f2a',
+                bodyColor: '#3d5260',
+                padding: 12,
+                boxShadow: '0 4px 12px rgba(0,31,42,0.1)',
+                callbacks: {
+                    label: ctx => ` ${ctx.parsed.y.toLocaleString()} eggs`
+                }
+            }
+        },
+        scales: {
+            x: {
+                grid: { color: 'rgba(0,31,42,0.05)' },
+                ticks: { color: '#3d5260', font: { size: 11, family: 'Public Sans' } }
+            },
+            y: {
+                grid: { color: 'rgba(0,31,42,0.05)' },
+                ticks: {
+                    color: '#3d5260',
+                    font: { size: 11, family: 'Public Sans' },
+                    callback: v => v.toLocaleString()
+                },
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+
+// ── Expense Donut Chart ───────────────────────────────
+const expCtx = document.getElementById('expenseChart').getContext('2d');
+
+// Placeholder data — will be replaced by real query data in next iteration
+const expenseData = [40, 25, 15, 12, 8];
+const expenseLabels = ['Feed', 'Labor', 'Utilities', 'Medicine', 'Other'];
+const expenseColors = ['#0d631b', '#2e7d32', '#75584d', '#ba1a1a', '#3d5260'];
+const expenseAlpha = expenseColors.map(c => c + '22');
+
+new Chart(expCtx, {
+    type: 'doughnut',
+    data: {
+        labels: expenseLabels,
+        datasets: [{
+            data: expenseData,
+            backgroundColor: expenseAlpha,
+            borderColor: expenseColors,
+            borderWidth: 2,
+            hoverOffset: 8,
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '65%',
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    color: '#3d5260',
+                    font: { size: 11, family: 'Public Sans' },
+                    boxWidth: 12,
+                    padding: 12,
+                }
+            },
+            tooltip: {
+                backgroundColor: '#ffffff',
+                borderColor: '#daedf7',
+                borderWidth: 1,
+                titleColor: '#001f2a',
+                bodyColor: '#3d5260',
+                padding: 12,
+                callbacks: {
+                    label: ctx => ` ${ctx.label}: ${ctx.parsed}%`
+                }
+            }
+        }
+    }
+});
+</script>
+{% endblock %}
