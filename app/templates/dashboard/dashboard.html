@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>PoultryConnect Dashboard</h1>
+    <div class="grid">
+        <div class="card">
+            <h3>Production Tracking</h3>
+            <p>Log your daily egg counts and feed consumption.</p>
+            <a href="{{ url_for('production.index') }}" class="btn btn-primary">Track Now</a>
+        </div>
+        <div class="card">
+            <h3>Predictive Analytics</h3>
+            <p>Predict production drops and get market price suggestions.</p>
+            <a href="{{ url_for('analytics.index') }}" class="btn btn-primary">View Insights</a>
+        </div>
+        <div class="card">
+            <h3>Marketplace</h3>
+            <p>List your products and connect with buyers directly.</p>
+            <a href="{{ url_for('marketplace.index') }}" class="btn btn-primary">Go to Market</a>
+        </div>
+        <div class="card">
+            <h3>Community Linkage</h3>
+            <p>Connect with veterinarians, feed suppliers, and cooperatives.</p>
+            <a href="{{ url_for('community.index') }}" class="btn btn-primary">Connect</a>
+        </div>
+    </div>
+{% endblock %}

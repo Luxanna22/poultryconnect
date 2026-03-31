@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="card" style="max-width: 400px; margin: 2rem auto;">
+        <h1>Register</h1>
+        <form action="" method="post">
+            <div style="margin-bottom:1rem;">
+                <label for="username">Username</label><br>
+                <input type="text" id="username" name="username" style="width:100%; border-radius:4px; padding:8px; border:1px solid #444; background:#222; color:white;">
+            </div>
+            <div style="margin-bottom:1rem;">
+                <label for="email">Email</label><br>
+                <input type="email" id="email" name="email" style="width:100%; border-radius:4px; padding:8px; border:1px solid #444; background:#222; color:white;">
+            </div>
+            <div style="margin-bottom:1rem;">
+                <label for="password">Password</label><br>
+                <input type="password" id="password" name="password" style="width:100%; border-radius:4px; padding:8px; border:1px solid #444; background:#222; color:white;">
+            </div>
+            <div style="margin-bottom:1rem;">
+                <label for="role">Role</label><br>
+                <select name="role" style="width:100%; border-radius:4px; padding:8px; border:1px solid #444; background:#222; color:white;">
+                    <option value="Farmer">Farmer</option>
+                    <option value="Staff">Staff</option>
+                    <option value="Buyer">Buyer</option>
+                </select>
+            </div>
+            <p><input type="submit" value="Register" class="btn btn-primary"></p>
+        </form>
+        <p>Already have an account? <a href="{{ url_for('auth.login') }}">Click to Login!</a></p>
+    </div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="card" style="max-width: 400px; margin: 2rem auto;">
+        <h1>Sign In</h1>
+        <form action="" method="post">
+            <div style="margin-bottom:1rem;">
+                <label for="username">Username</label><br>
+                <input type="text" id="username" name="username" style="width:100%; border-radius:4px; padding:8px; border:1px solid #444; background:#222; color:white;">
+            </div>
+            <div style="margin-bottom:1rem;">
+                <label for="password">Password</label><br>
+                <input type="password" id="password" name="password" style="width:100%; border-radius:4px; padding:8px; border:1px solid #444; background:#222; color:white;">
+            </div>
+            <p><input type="checkbox" name="remember"> Remember Me</p>
+            <p><input type="submit" value="Sign In" class="btn btn-primary"></p>
+        </form>
+        <p>New User? <a href="{{ url_for('auth.register') }}">Click to Register!</a></p>
+    </div>
+{% endblock %}
