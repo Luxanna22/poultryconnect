@@ -146,6 +146,7 @@ class ProductionRecord(db.Model):
     egg_count    = db.Column(db.Integer, nullable=False, default=0)  # total eggs collected
     feed_kg      = db.Column(db.Numeric(8, 2), default=0.00)         # feed consumed in kg
     feed_cost    = db.Column(db.Numeric(10, 2), default=0.00)        # cost of feed that day (PHP)
+    egg_price    = db.Column(db.Numeric(10, 2), nullable=True)       # selling price per egg (PHP); None = not recorded
     mortality    = db.Column(db.Integer, default=0)                   # birds that died
     notes        = db.Column(db.Text)
 
@@ -156,6 +157,13 @@ class ProductionRecord(db.Model):
     __table_args__ = (
         db.UniqueConstraint('farm_id', 'record_date', name='uq_farm_record_date'),
     )
+
+    @property
+    def revenue(self):
+        """Daily revenue: egg_count × egg_price. Returns 0 if price not set."""
+        if self.egg_price:
+            return float(self.egg_count) * float(self.egg_price)
+        return 0.0
 
     def __repr__(self):
         return f'<ProductionRecord farm={self.farm_id} date={self.record_date} eggs={self.egg_count}>'

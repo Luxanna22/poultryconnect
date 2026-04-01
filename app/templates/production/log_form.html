@@ -108,6 +108,17 @@
             </div>
 
             <div class="form-group">
+                <label for="egg_price">
+                    Selling Price per Egg (₱)
+                    <span class="form-hint-inline" title="Used by Analytics to calculate your revenue and profit/loss">ℹ</span>
+                </label>
+                <input type="number" id="egg_price" name="egg_price"
+                       min="0" step="0.01" placeholder="e.g. 7.50"
+                       value="{{ form_data.get('egg_price') or (record.egg_price if action == 'edit' and record.egg_price else '') }}">
+                <span class="form-hint">Optional — the price per egg you sold at today. Powers your Analytics profit/loss report.</span>
+            </div>
+
+            <div class="form-group">
                 <label for="notes">Notes</label>
                 <textarea id="notes" name="notes" rows="2"
                           placeholder="Optional — observations, flock health notes, weather, etc.">{{ form_data.get('notes') or (record.notes or '' if action == 'edit' else '') }}</textarea>

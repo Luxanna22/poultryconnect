@@ -1278,3 +1278,202 @@ a { text-decoration: none; color: inherit; }
     .farms-grid { grid-template-columns: 1fr; }
     .form-card { padding: 1.25rem; }
 }
+
+
+/* ════════════════════════════════════════════════════════════════
+   ANALYTICS MODULE
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Month Navigator ───────────────────────────────────────────── */
+.month-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--surface-container);
+    border-radius: var(--radius-full);
+    padding: 0.3rem 0.5rem;
+}
+
+.month-nav__label {
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--on-surface);
+    padding: 0 0.4rem;
+    white-space: nowrap;
+}
+
+.month-nav__btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--on-surface-variant);
+    transition: background 0.18s, color 0.18s;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.month-nav__btn svg  { width: 16px; height: 16px; }
+.month-nav__btn:hover { background: var(--surface-container-high); color: var(--primary); }
+.month-nav__btn--disabled { pointer-events: none; opacity: 0.3; }
+
+/* ── KPI variants for analytics  ────────────────────────────────── */
+.kpi-grid--analytics {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.kpi-card--profit .kpi-icon { background: var(--primary-fixed); color: var(--primary); }
+.kpi-card--loss   .kpi-icon { background: var(--error-container); color: var(--error); }
+.kpi-value--loss  { color: var(--error); }
+
+/* ── Price Engine Card ────────────────────────────────────────── */
+.price-engine-card {
+    background: var(--surface-container-lowest);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-ambient);
+    margin-bottom: 1.5rem;
+    border: 1.5px solid var(--primary-fixed);
+}
+
+.price-engine__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+}
+
+.price-engine__title {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--on-surface);
+}
+
+.price-engine__sub {
+    font-size: 0.78rem;
+    color: var(--on-surface-variant);
+    margin-top: 0.2rem;
+    font-family: var(--font-body);
+}
+
+.price-engine__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.price-pill {
+    border-radius: var(--radius-md);
+    padding: 1.1rem 1.25rem;
+    transition: transform 0.18s;
+}
+
+.price-pill:hover { transform: translateY(-2px); }
+
+.price-pill--neutral     { background: var(--surface-container); border: 1.5px solid var(--outline); }
+.price-pill--recommended { background: var(--primary-fixed); border: 1.5px solid var(--primary-container); }
+.price-pill--good        { background: #e8f5e9; border: 1.5px solid #a5d6a7; }
+.price-pill--warning     { background: #fff8e1; border: 1.5px solid #ffe082; }
+
+.price-pill__label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--on-surface-variant);
+    margin-bottom: 0.4rem;
+    font-family: var(--font-body);
+}
+
+.price-pill__val {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--on-surface);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.price-pill--recommended .price-pill__val { color: var(--primary); }
+
+.price-pill__hint {
+    font-size: 0.78rem;
+    color: var(--on-surface-variant);
+    font-family: var(--font-body);
+}
+
+.price-engine__empty {
+    text-align: center;
+    padding: 1.5rem;
+    color: var(--on-surface-variant);
+    font-size: 0.875rem;
+    font-family: var(--font-body);
+}
+
+/* ── Expense Legend ───────────────────────────────────────────── */
+.expense-legend {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.8rem;
+    font-family: var(--font-body);
+}
+
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.legend-label {
+    flex: 1;
+    color: var(--on-surface);
+    font-weight: 500;
+}
+
+.legend-val {
+    font-weight: 700;
+    color: var(--on-surface);
+}
+
+/* ── Form hint inline ─────────────────────────────────────────── */
+.form-hint-inline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--surface-container);
+    color: var(--on-surface-variant);
+    font-size: 0.65rem;
+    font-weight: 700;
+    cursor: help;
+    margin-left: 4px;
+    vertical-align: middle;
+    font-style: normal;
+}
+
+/* ── Responsive analytics ─────────────────────────────────────── */
+@media (max-width: 1024px) {
+    .kpi-grid--analytics { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 640px) {
+    .kpi-grid--analytics { grid-template-columns: 1fr 1fr; }
+    .price-engine__grid  { grid-template-columns: 1fr; }
+}

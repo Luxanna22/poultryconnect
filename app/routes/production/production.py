@@ -254,6 +254,8 @@ def log_add():
         egg_count   = _safe_int(request.form.get('egg_count'), default=0)
         feed_kg     = _safe_decimal(request.form.get('feed_kg'))
         feed_cost   = _safe_decimal(request.form.get('feed_cost'))
+        egg_price_raw = request.form.get('egg_price', '').strip()
+        egg_price   = _safe_decimal(egg_price_raw) if egg_price_raw else None
         mortality   = _safe_int(request.form.get('mortality'), default=0)
         notes       = request.form.get('notes', '').strip()
 
@@ -275,6 +277,8 @@ def log_add():
             errors.append('Feed cost cannot be negative.')
         if mortality < 0:
             errors.append('Mortality count cannot be negative.')
+        if egg_price is not None and egg_price < 0:
+            errors.append('Egg selling price cannot be negative.')
 
         if errors:
             for e in errors:
@@ -293,6 +297,7 @@ def log_add():
             egg_count=egg_count,
             feed_kg=feed_kg,
             feed_cost=feed_cost,
+            egg_price=egg_price,
             mortality=mortality,
             notes=notes or None,
         )
@@ -338,6 +343,8 @@ def log_edit(record_id: int):
         egg_count = _safe_int(request.form.get('egg_count'), default=record.egg_count)
         feed_kg   = _safe_decimal(request.form.get('feed_kg'))
         feed_cost = _safe_decimal(request.form.get('feed_cost'))
+        egg_price_raw = request.form.get('egg_price', '').strip()
+        egg_price = _safe_decimal(egg_price_raw) if egg_price_raw else None
         mortality = _safe_int(request.form.get('mortality'), default=record.mortality)
         notes     = request.form.get('notes', '').strip()
 
@@ -364,6 +371,7 @@ def log_edit(record_id: int):
         record.egg_count = egg_count
         record.feed_kg   = feed_kg
         record.feed_cost = feed_cost
+        record.egg_price = egg_price
         record.mortality = mortality
         record.notes     = notes or None
         db.session.commit()
