@@ -5,7 +5,7 @@
 {% block breadcrumb %}PoultryConnect / Farmer / Overview{% endblock %}
 
 {% block topbar_actions %}
-    <a href="{{ url_for('production.index') }}" class="btn btn-primary">
+    <a href="{{ url_for('production.log_add') }}" class="btn btn-primary">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
         </svg>
@@ -31,7 +31,7 @@
         {% if farm.location %}<span style="color: var(--text-muted); font-weight:400;">· {{ farm.location }}</span>{% endif %}
     </div>
     {% endfor %}
-    <a href="{{ url_for('production.index') }}" class="farm-chip add-chip">
+    <a href="{{ url_for('production.farm_add') }}" class="farm-chip add-chip">
         + Add Farm
     </a>
 </div>
@@ -139,7 +139,7 @@
         <div class="quick-log-sub">Record today's production in seconds</div>
 
         {% if farms %}
-        <form class="ql-form" method="POST" action="{{ url_for('production.index') }}">
+        <form class="ql-form" method="POST" action="{{ url_for('production.quick_log') }}">
 
             <div class="ql-field">
                 <label for="ql-farm">Farm</label>
@@ -172,7 +172,7 @@
         {% else %}
         <div class="no-farm-notice">
             You have no farms registered yet.<br>
-            <a href="{{ url_for('production.index') }}">Register your first farm</a> to start logging.
+            <a href="{{ url_for('production.farm_add') }}">Register your first farm</a> to start logging.
         </div>
         {% endif %}
     </div>
@@ -181,7 +181,7 @@
     <div class="recent-card">
         <div class="recent-header">
             <div class="recent-title">Recent Production Records</div>
-            <a href="{{ url_for('production.index') }}" class="recent-link">View All</a>
+            <a href="{{ url_for('production.log') }}" class="recent-link">View All</a>
         </div>
 
         {% if recent_records %}

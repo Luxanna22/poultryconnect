@@ -1,0 +1,124 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Production Log — PoultryConnect{% endblock %}
+{% block page_title %}Production Log{% endblock %}
+{% block breadcrumb %}PoultryConnect / Farm Operations / Production{% endblock %}
+
+{% block topbar_actions %}
+<a href="{{ url_for('production.log_add') }}" class="btn btn-primary">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+    Log Production
+</a>
+{% endblock %}
+
+{% block content %}
+
+<div class="section-header">
+    <h2>Daily Production Records</h2>
+    <p>Your last 60 production entries. Each record is one farm per day.</p>
+</div>
+
+{# Farm filter chips #}
+{% if farms %}
+<div class="filter-chips">
+    <a href="{{ url_for('production.log') }}"
+       class="filter-chip {% if not selected_farm_id %}active{% endif %}">All Farms</a>
+    {% for farm in farms %}
+    <a href="{{ url_for('production.log') }}?farm_id={{ farm.id }}"
+       class="filter-chip {% if selected_farm_id == farm.id %}active{% endif %}">
+        {{ farm.name }}
+    </a>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if records %}
+<div class="table-card">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Farm</th>
+                <th>Eggs</th>
+                <th>Feed (kg)</th>
+                <th>Feed Cost (₱)</th>
+                <th>Mortality</th>
+                <th>Notes</th>
+                <th style="text-align:right">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rec in records %}
+            <tr>
+                <td>
+                    <span class="date-pill">{{ rec.record_date.strftime('%b %d, %Y') }}</span>
+                </td>
+                <td class="muted">{{ farm_map.get(rec.farm_id, '—') }}</td>
+                <td>
+                    <span class="badge badge-eggs">{{ "{:,}".format(rec.egg_count) }}</span>
+                </td>
+                <td class="muted">{{ rec.feed_kg or '—' }}</td>
+                <td class="muted">
+                    {% if rec.feed_cost %}₱{{ "{:,.2f}".format(rec.feed_cost) }}{% else %}—{% endif %}
+                </td>
+                <td>
+                    {% if rec.mortality and rec.mortality > 0 %}
+                        <span style="color:var(--error);font-weight:600;">{{ rec.mortality }}</span>
+                    {% else %}
+                        <span class="muted">0</span>
+                    {% endif %}
+                </td>
+                <td class="muted" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                    {{ rec.notes or '—' }}
+                </td>
+                <td style="text-align:right">
+                    <div class="row-actions">
+                        <a href="{{ url_for('production.log_edit', record_id=rec.id) }}"
+                           class="row-action-btn" title="Edit">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                        </a>
+                        <form method="POST" action="{{ url_for('production.log_delete', record_id=rec.id) }}"
+                              style="display:inline"
+                              onsubmit="return confirm('Delete this production record? This cannot be undone.')">
+                            <button type="submit" class="row-action-btn row-action-btn--danger" title="Delete">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="3 6 5 6 21 6"/>
+                                    <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+                                    <path d="M10 11v6M14 11v6"/>
+                                    <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-page">
+    <div class="empty-page__icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6"  y1="20" x2="6"  y2="14"/>
+            <line x1="2"  y1="20" x2="22" y2="20"/>
+        </svg>
+    </div>
+    <h3>No production records yet</h3>
+    <p>Start logging your daily egg counts, feed usage, and flock data.</p>
+    <a href="{{ url_for('production.log_add') }}" class="btn btn-primary">Log First Record</a>
+</div>
+{% endif %}
+
+{% endblock %}

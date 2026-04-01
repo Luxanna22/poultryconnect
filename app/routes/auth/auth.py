@@ -100,12 +100,12 @@ def register():
 
         if role_str not in ALLOWED_ROLES:
             errors.append('Please select a valid role.')
-
+        
         if User.query.filter_by(username=username).first():
-            errors.append(f'Username "{username}" is already taken.')
-
+            errors.append(f'Username is already taken.')
+        
         if User.query.filter_by(email=email).first():
-            errors.append('An account with that email already exists.')
+            errors.append(f'Email is already taken.')
 
         if errors:
             for err in errors:
@@ -122,11 +122,12 @@ def register():
             role=ALLOWED_ROLES[role_str],
             is_active=True,
         )
+        
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
 
-        flash(f'Account created successfully! Welcome, {user.first_name}. Please sign in.', 'success')
+        flash(f'Account created successfully! Please sign in.', 'success')
         return redirect(url_for('auth.login'))
 
     return render_template('auth/register.html', title='Create Account', form_data={})

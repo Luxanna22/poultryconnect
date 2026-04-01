@@ -1,0 +1,113 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Expense Log — PoultryConnect{% endblock %}
+{% block page_title %}Expense Log{% endblock %}
+{% block breadcrumb %}PoultryConnect / Farm Operations / Expenses{% endblock %}
+
+{% block topbar_actions %}
+<a href="{{ url_for('production.expense_add') }}" class="btn btn-primary">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+    Add Expense
+</a>
+{% endblock %}
+
+{% block content %}
+
+<div class="section-header">
+    <h2>Expense Records</h2>
+    <p>Track your operational costs — feed, labor, utilities, medicine, and more.</p>
+</div>
+
+{% if farms %}
+<div class="filter-chips">
+    <a href="{{ url_for('production.expenses') }}"
+       class="filter-chip {% if not selected_farm_id %}active{% endif %}">All Farms</a>
+    {% for farm in farms %}
+    <a href="{{ url_for('production.expenses') }}?farm_id={{ farm.id }}"
+       class="filter-chip {% if selected_farm_id == farm.id %}active{% endif %}">
+        {{ farm.name }}
+    </a>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if expenses %}
+<div class="table-card">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Farm</th>
+                <th>Category</th>
+                <th>Amount (₱)</th>
+                <th>Description</th>
+                <th style="text-align:right">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for exp in expenses %}
+            <tr>
+                <td>
+                    <span class="date-pill">{{ exp.expense_date.strftime('%b %d, %Y') }}</span>
+                </td>
+                <td class="muted">{{ farm_map.get(exp.farm_id, '—') }}</td>
+                <td>
+                    <span class="badge badge-category badge-{{ exp.category.value }}">
+                        {{ exp.category.value | replace('_', ' ') | title }}
+                    </span>
+                </td>
+                <td>
+                    <strong>₱{{ "{:,.2f}".format(exp.amount) }}</strong>
+                </td>
+                <td class="muted" style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                    {{ exp.description or '—' }}
+                </td>
+                <td style="text-align:right">
+                    <div class="row-actions">
+                        <a href="{{ url_for('production.expense_edit', expense_id=exp.id) }}"
+                           class="row-action-btn" title="Edit">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                        </a>
+                        <form method="POST" action="{{ url_for('production.expense_delete', expense_id=exp.id) }}"
+                              style="display:inline"
+                              onsubmit="return confirm('Delete this expense record?')">
+                            <button type="submit" class="row-action-btn row-action-btn--danger" title="Delete">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="3 6 5 6 21 6"/>
+                                    <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+                                    <path d="M10 11v6M14 11v6"/>
+                                    <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-page">
+    <div class="empty-page__icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="1" x2="12" y2="23"/>
+            <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+        </svg>
+    </div>
+    <h3>No expenses recorded yet</h3>
+    <p>Log your feed costs, labor, utilities, and other farm expenses to track profitability.</p>
+    <a href="{{ url_for('production.expense_add') }}" class="btn btn-primary">Add First Expense</a>
+</div>
+{% endif %}
+
+{% endblock %}

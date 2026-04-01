@@ -1,0 +1,109 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}My Farms — PoultryConnect{% endblock %}
+{% block page_title %}My Farms{% endblock %}
+{% block breadcrumb %}PoultryConnect / Farm Management{% endblock %}
+
+{% block topbar_actions %}
+<a href="{{ url_for('production.farm_add') }}" class="btn btn-primary">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+    Add Farm
+</a>
+{% endblock %}
+
+{% block content %}
+
+<div class="section-header">
+    <h2>Farm Management</h2>
+    <p>Register and manage all your poultry farms in one place.</p>
+</div>
+
+{% if farms %}
+<div class="farms-grid">
+    {% for farm in farms %}
+    <div class="farm-card {% if not farm.is_active %}farm-card--inactive{% endif %}">
+
+        <div class="farm-card__header">
+            <div class="farm-card__icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+            </div>
+            <div class="farm-card__meta">
+                <div class="farm-card__name">{{ farm.name }}</div>
+                {% if farm.location %}
+                    <div class="farm-card__location">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             style="width:12px;height:12px;display:inline;vertical-align:middle;">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                            <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        {{ farm.location }}
+                    </div>
+                {% endif %}
+            </div>
+            {% if not farm.is_active %}
+                <span class="badge badge-inactive">Inactive</span>
+            {% endif %}
+        </div>
+
+        <div class="farm-card__stats">
+            <div class="farm-stat">
+                <div class="farm-stat__val">{{ farm.flock_size or '—' }}</div>
+                <div class="farm-stat__label">Birds</div>
+            </div>
+            <div class="farm-stat">
+                <div class="farm-stat__val">{{ farm.production_records.count() }}</div>
+                <div class="farm-stat__label">Records</div>
+            </div>
+            <div class="farm-stat">
+                <div class="farm-stat__val">{{ farm.created_at.strftime('%b %Y') }}</div>
+                <div class="farm-stat__label">Registered</div>
+            </div>
+        </div>
+
+        {% if farm.description %}
+        <p class="farm-card__desc">{{ farm.description }}</p>
+        {% endif %}
+
+        <div class="farm-card__actions">
+            <a href="{{ url_for('production.farm_edit', farm_id=farm.id) }}" class="btn btn-secondary btn-sm">
+                Edit
+            </a>
+            <a href="{{ url_for('production.log') }}?farm_id={{ farm.id }}" class="btn btn-secondary btn-sm">
+                View Logs
+            </a>
+            {% if farm.is_active %}
+            <form method="POST" action="{{ url_for('production.farm_deactivate', farm_id=farm.id) }}"
+                  onsubmit="return confirm('Deactivate {{ farm.name }}? Existing records are preserved.')">
+                <button type="submit" class="btn btn-danger-soft btn-sm">Deactivate</button>
+            </form>
+            {% endif %}
+        </div>
+
+    </div>
+    {% endfor %}
+</div>
+
+{% else %}
+<div class="empty-page">
+    <div class="empty-page__icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+    </div>
+    <h3>No farms yet</h3>
+    <p>Register your first farm to start tracking production and expenses.</p>
+    <a href="{{ url_for('production.farm_add') }}" class="btn btn-primary">Register Your First Farm</a>
+</div>
+{% endif %}
+
+{% endblock %}

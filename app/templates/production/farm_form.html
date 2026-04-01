@@ -1,0 +1,68 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}{{ title }} — PoultryConnect{% endblock %}
+{% block page_title %}{{ 'Edit Farm' if action == 'edit' else 'Add New Farm' }}{% endblock %}
+{% block breadcrumb %}
+    PoultryConnect / <a href="{{ url_for('production.farms') }}" style="color:var(--primary)">My Farms</a> / {{ 'Edit' if action == 'edit' else 'Add' }}
+{% endblock %}
+
+{% block content %}
+
+<div class="form-page">
+    <div class="form-card">
+
+        <div class="form-card__header">
+            <h2 class="form-card__title">{{ 'Edit Farm Details' if action == 'edit' else 'Register a New Farm' }}</h2>
+            <p class="form-card__sub">
+                {% if action == 'edit' %}
+                    Update the details for <strong>{{ farm.name }}</strong>.
+                {% else %}
+                    Add a new poultry farm to your account. You can manage multiple farms here.
+                {% endif %}
+            </p>
+        </div>
+
+        <form method="POST" class="data-form" novalidate>
+
+            <div class="form-group">
+                <label for="name">Farm Name <span class="required">*</span></label>
+                <input type="text" id="name" name="name" required
+                       maxlength="120"
+                       placeholder="e.g. Santos Layer Farm 1"
+                       value="{{ form_data.get('name') or (farm.name if action == 'edit' else '') }}">
+                <span class="form-hint">Give your farm a clear, recognisable name.</span>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" name="location"
+                       placeholder="e.g. Batangas City, Batangas"
+                       value="{{ form_data.get('location') or (farm.location or '' if action == 'edit' else '') }}">
+            </div>
+
+            <div class="form-group">
+                <label for="flock_size">Current Flock Size (number of birds)</label>
+                <input type="number" id="flock_size" name="flock_size"
+                       min="0" step="1" placeholder="e.g. 500"
+                       value="{{ form_data.get('flock_size') or (farm.flock_size or '' if action == 'edit' else '') }}">
+                <span class="form-hint">Total number of laying hens currently on this farm.</span>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description / Notes</label>
+                <textarea id="description" name="description" rows="3"
+                          placeholder="Optional — Any notes about this farm, setup, or breed type.">{{ form_data.get('description') or (farm.description or '' if action == 'edit' else '') }}</textarea>
+            </div>
+
+            <div class="form-actions">
+                <a href="{{ url_for('production.farms') }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">
+                    {{ 'Save Changes' if action == 'edit' else 'Register Farm' }}
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+{% endblock %}
