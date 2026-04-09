@@ -39,7 +39,18 @@ def create_app(config_class=Config):
     @app.route('/')
     def index():
         from flask import render_template
-        return render_template('landing.html', title='PoultryConnect — Smart Farming, Better Living')
+        from app.models import Product
+        # Fetch latest marketplace products for landing preview
+        preview_products = Product.query.filter_by(
+            is_available=True
+        ).filter(Product.stock > 0).order_by(
+            Product.created_at.desc()
+        ).limit(4).all()
+        return render_template(
+            'landing.html',
+            title='PoultryConnect — Smart Farming, Better Living',
+            preview_products=preview_products,
+        )
 
     return app
 

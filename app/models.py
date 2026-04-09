@@ -200,3 +200,158 @@ class Expense(db.Model):
 
     def __repr__(self):
         return f'<Expense farm={self.farm_id} {self.category.value} ₱{self.amount} on {self.expense_date}>'
+
+
+# ─────────────────────────────────────────
+# MARKETPLACE ENUMS
+# ─────────────────────────────────────────
+
+class ProductCategory(str, enum.Enum):
+    EGGS       = 'eggs'
+    LIVE_BIRDS = 'live_birds'
+    DRESSED    = 'dressed'
+    OTHER      = 'other'
+
+class ProductUnit(str, enum.Enum):
+    PIECE    = 'piece'
+    TRAY     = 'tray'
+    KILOGRAM = 'kilogram'
+    HEAD     = 'head'
+
+class OrderStatus(str, enum.Enum):
+    PENDING    = 'pending'
+    CONFIRMED  = 'confirmed'
+    SHIPPED    = 'shipped'
+    DELIVERED  = 'delivered'
+    CANCELLED  = 'cancelled'
+
+
+# ─────────────────────────────────────────
+# TABLE 5: products
+# ─────────────────────────────────────────
+
+class Product(db.Model):
+    """
+    Marketplace product listings created by farmers.
+    Indexed: farmer_id, farm_id, category, is_available — all frequent query paths.
+    """
+    __tablename__ = 'products'
+
+    id            = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    farmer_id     = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    farm_id       = db.Column(db.Integer, db.ForeignKey('farms.id'), nullable=False, index=True)
+
+    name          = db.Column(db.String(150), nullable=False)
+    description   = db.Column(db.Text)
+    category      = db.Column(
+                       db.Enum(ProductCategory),
+                       nullable=False,
+                       default=ProductCategory.EGGS,
+                       index=True
+                   )
+    unit          = db.Column(
+                       db.Enum(ProductUnit),
+                       nullable=False,
+                       default=ProductUnit.PIECE
+                   )
+    price         = db.Column(db.Numeric(10, 2), nullable=False)        # PHP per unit
+    stock         = db.Column(db.Integer, nullable=False, default=0)
+    location      = db.Column(db.String(255))                           # auto-filled from farm
+    is_available  = db.Column(db.Boolean, nullable=False, default=True, index=True)
+
+    created_at    = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    updated_at    = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    farmer        = db.relationship('User', backref=db.backref('products', lazy='dynamic'))
+    farm          = db.relationship('Farm', backref=db.backref('products', lazy='dynamic'))
+    order_items   = db.relationship('OrderItem', backref='product', lazy='dynamic')
+
+    @property
+    def stock_label(self):
+        if self.stock <= 0:
+            return 'out_of_stock'
+        elif self.stock <= 10:
+            return 'low_stock'
+        return 'in_stock'
+
+    @property
+    def category_label(self):
+        return self.category.value.replace('_', ' ').title()
+
+    @property
+    def unit_label(self):
+        return self.unit.value.replace('_', ' ')
+
+    def __repr__(self):
+        return f'<Product {self.name} ₱{self.price}/{self.unit.value} (farmer={self.farmer_id})>'
+
+
+# ─────────────────────────────────────────
+# TABLE 6: orders
+# ─────────────────────────────────────────
+
+class Order(db.Model):
+    """
+    Purchase orders placed by buyers.
+    Indexed: buyer_id, status — dashboard queries.
+    """
+    __tablename__ = 'orders'
+
+    id               = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    buyer_id         = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+
+    total_amount     = db.Column(db.Numeric(12, 2), nullable=False, default=0)
+    status           = db.Column(
+                          db.Enum(OrderStatus),
+                          nullable=False,
+                          default=OrderStatus.PENDING,
+                          index=True
+                      )
+    delivery_address = db.Column(db.String(500), nullable=False)
+    contact_phone    = db.Column(db.String(30), nullable=False)
+    notes            = db.Column(db.Text)
+
+    created_at       = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    updated_at       = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    buyer            = db.relationship('User', backref=db.backref('orders', lazy='dynamic'))
+    items            = db.relationship('OrderItem', backref='order', lazy='joined',
+                                        cascade='all, delete-orphan')
+
+    @property
+    def status_label(self):
+        return self.status.value.replace('_', ' ').title()
+
+    @property
+    def item_count(self):
+        return len(self.items)
+
+    def __repr__(self):
+        return f'<Order #{self.id} buyer={self.buyer_id} ₱{self.total_amount} [{self.status.value}]>'
+
+
+# ─────────────────────────────────────────
+# TABLE 7: order_items
+# ─────────────────────────────────────────
+
+class OrderItem(db.Model):
+    """
+    Line items within an order.
+    Captures a snapshot of the unit price at order time so it never changes retroactively.
+    """
+    __tablename__ = 'order_items'
+
+    id           = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    order_id     = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=False, index=True)
+    product_id   = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False, index=True)
+    quantity     = db.Column(db.Integer, nullable=False, default=1)
+    unit_price   = db.Column(db.Numeric(10, 2), nullable=False)   # price snapshot at order time
+
+    @property
+    def subtotal(self):
+        return float(self.quantity) * float(self.unit_price)
+
+    def __repr__(self):
+        return f'<OrderItem order={self.order_id} product={self.product_id} qty={self.quantity}>'
