@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Marketplace — PoultryConnect{% endblock %}</title>
+    <meta name="description" content="Shop fresh eggs, live birds, and poultry products directly from local Filipino farmers. No middlemen.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Public+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* ═══ Design Tokens (matching landing page) ═══ */
+        :root {
+            --primary:               #0d631b;
+            --primary-container:     #2e7d32;
+            --on-primary:            #ffffff;
+            --on-primary-container:  #002106;
+            --primary-fixed:         #b7f0bb;
+            --secondary:             #75584d;
+            --tertiary:              #545652;
+            --surface:               #f4faff;
+            --surface-container-low: #e6f6ff;
+            --surface-container:     #daedf7;
+            --surface-container-high:#cde4ef;
+            --surface-container-highest:#c0dbe7;
+            --surface-container-lowest:#ffffff;
+            --surface-variant:       #c9e7f7;
+            --on-surface:            #001f2a;
+            --on-surface-variant:    #3f5059;
+            --outline:               #d9e5ec;
+            --error:                 #ba1a1a;
+            --error-container:       #ffdad6;
+            --font-display:          'Manrope', sans-serif;
+            --font-body:             'Public Sans', sans-serif;
+            --radius-sm:             8px;
+            --radius-md:             12px;
+            --radius-lg:             16px;
+            --radius-full:           9999px;
+            --shadow-card:           0 1px 4px rgba(0,31,42,0.06);
+            --shadow-ambient:        0 8px 24px rgba(0,31,42,0.06);
+            --grad-primary:          linear-gradient(135deg, #0d631b 0%, #2e7d32 50%, #1a831c 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--surface);
+            color: var(--on-surface);
+            min-height: 100vh;
+        }
+
+        a { color: inherit; text-decoration: none; }
+
+        /* ═══ Navbar ═══ */
+        .mp-nav {
+            background: var(--surface-container-lowest);
+            border-bottom: 1px solid var(--outline);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 8px rgba(0,31,42,0.04);
+        }
+
+        .mp-nav__inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mp-nav__brand {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .mp-nav__logo {
+            width: 36px;
+            height: 36px;
+            background: var(--grad-primary);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .mp-nav__logo svg { width: 20px; height: 20px; }
+
+        .mp-nav__name {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--on-surface);
+        }
+
+        .mp-nav__name span {
+            color: var(--primary);
+        }
+
+        .mp-nav__links {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .mp-nav__link {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--on-surface-variant);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-full);
+            transition: background 0.18s, color 0.18s;
+        }
+
+        .mp-nav__link:hover {
+            background: var(--surface-container-low);
+            color: var(--on-surface);
+        }
+
+        .mp-nav__link.active {
+            background: var(--primary-fixed);
+            color: var(--primary);
+        }
+
+        .mp-nav__actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .mp-nav__cart {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-sm);
+            color: var(--on-surface-variant);
+            transition: background 0.18s, color 0.18s;
+        }
+
+        .mp-nav__cart:hover {
+            background: var(--surface-container-low);
+            color: var(--primary);
+        }
+
+        .mp-nav__cart svg { width: 20px; height: 20px; }
+
+        .mp-nav__cart-badge {
+            position: absolute;
+            top: 4px;
+            right: 2px;
+            background: var(--primary);
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 700;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.55rem 1.25rem;
+            border-radius: var(--radius-full);
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.18s;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--grad-primary);
+            color: white;
+            box-shadow: 0 2px 8px rgba(13,99,27,0.2);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 4px 16px rgba(13,99,27,0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--surface-container-low);
+            color: var(--on-surface);
+            border: 1.5px solid var(--outline);
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface-container);
+        }
+
+        .btn-sm { padding: 0.4rem 0.85rem; font-size: 0.8rem; }
+        .btn-lg { padding: 0.7rem 1.75rem; font-size: 0.92rem; }
+
+        /* ═══ Container ═══ */
+        .mp-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* ═══ Flash messages ═══ */
+        .mp-flash-wrap {
+            max-width: 1280px;
+            margin: 1rem auto 0;
+            padding: 0 2rem;
+        }
+
+        .mp-flash {
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .mp-flash.success { background: #e8f5e9; color: #1b5e20; }
+        .mp-flash.error   { background: #ffdad6; color: #ba1a1a; }
+        .mp-flash.info    { background: #e3f2fd; color: #0d47a1; }
+
+        /* ═══ Footer ═══ */
+        .mp-footer {
+            background: var(--on-surface);
+            color: rgba(255,255,255,0.6);
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.82rem;
+            margin-top: 4rem;
+        }
+
+        .mp-footer strong { color: white; }
+
+        /* ═══ Mobile nav ═══ */
+        .mp-nav__toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--on-surface);
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mp-nav__toggle svg { width: 24px; height: 24px; }
+
+        @media (max-width: 768px) {
+            .mp-nav__inner { padding: 0 1rem; }
+            .mp-container { padding: 0 1rem; }
+            .mp-nav__links { display: none; }
+            .mp-nav__toggle { display: flex; }
+        }
+
+        {% block extra_style %}{% endblock %}
+    </style>
+</head>
+<body>
+
+    <!-- ═══ Navigation Bar ═══ -->
+    <nav class="mp-nav">
+        <div class="mp-nav__inner">
+            <a href="{{ url_for('index') }}" class="mp-nav__brand">
+                <div class="mp-nav__logo">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+                </div>
+                <div class="mp-nav__name">Poultry<span>Connect</span></div>
+            </a>
+
+            <div class="mp-nav__links">
+                <a href="{{ url_for('index') }}" class="mp-nav__link">Home</a>
+                <a href="{{ url_for('marketplace.index') }}" class="mp-nav__link {% if request.endpoint == 'marketplace.index' %}active{% endif %}">Shop</a>
+                {% if current_user.is_authenticated %}
+                    {% if current_user.role.value == 'farmer' %}
+                    <a href="{{ url_for('marketplace.manage') }}" class="mp-nav__link {% if 'manage' in request.endpoint %}active{% endif %}">My Products</a>
+                    <a href="{{ url_for('dashboard.farmer') }}" class="mp-nav__link">Dashboard</a>
+                    {% elif current_user.role.value == 'buyer' %}
+                    <a href="{{ url_for('marketplace.orders') }}" class="mp-nav__link {% if request.endpoint == 'marketplace.orders' %}active{% endif %}">My Orders</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            <div class="mp-nav__actions">
+                {% if current_user.is_authenticated and current_user.role.value == 'buyer' %}
+                <a href="{{ url_for('marketplace.cart') }}" class="mp-nav__cart" title="Shopping Cart">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+                    {% if cart_count > 0 %}
+                    <span class="mp-nav__cart-badge">{{ cart_count }}</span>
+                    {% endif %}
+                </a>
+                {% endif %}
+
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary btn-sm">Sign Out</a>
+                {% else %}
+                <a href="{{ url_for('auth.login') }}" class="btn btn-secondary btn-sm">Sign In</a>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-sm">Get Started</a>
+                {% endif %}
+            </div>
+
+            <button class="mp-nav__toggle" onclick="document.querySelector('.mp-nav__links').style.display=document.querySelector('.mp-nav__links').style.display==='flex'?'none':'flex'">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ═══ Flash Messages ═══ -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="mp-flash-wrap">
+            {% for category, message in messages %}
+            <div class="mp-flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- ═══ Page Content ═══ -->
+    {% block content %}{% endblock %}
+
+    <!-- ═══ Footer ═══ -->
+    <footer class="mp-footer">
+        <strong>PoultryConnect</strong> — Smart Farming, Better Living &copy; 2026
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

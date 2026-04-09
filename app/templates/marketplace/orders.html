@@ -1,0 +1,66 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}My Orders — PoultryConnect{% endblock %}
+{% block page_title %}My Orders{% endblock %}
+{% block breadcrumb %}PoultryConnect / <a href="{{ url_for('marketplace.index') }}" style="color:var(--primary);">Marketplace</a> / Orders{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/marketplace.css') }}">
+{% endblock %}
+
+{% block content %}
+
+{% if orders %}
+<div class="orders-list">
+    {% for order in orders %}
+    <div class="order-card" id="order-{{ order.id }}">
+        <div class="order-card__header">
+            <div class="order-card__id">
+                <span class="order-card__label">Order</span>
+                <span class="order-card__num">#{{ order.id }}</span>
+            </div>
+            <div class="order-status order-status--{{ order.status.value }}">
+                {{ order.status_label }}
+            </div>
+        </div>
+
+        <div class="order-card__details">
+            <div class="order-card__detail">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                {{ order.created_at.strftime('%b %d, %Y at %I:%M %p') }}
+            </div>
+            <div class="order-card__detail">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+                {{ order.item_count }} item{{ 's' if order.item_count != 1 }}
+            </div>
+            <div class="order-card__detail">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                {{ order.delivery_address[:50] }}{{ '...' if order.delivery_address|length > 50 }}
+            </div>
+        </div>
+
+        <div class="order-card__footer">
+            <div class="order-card__total">
+                <span class="order-card__total-label">Total:</span>
+                <span class="order-card__total-val">₱{{ "%.2f"|format(order.total_amount) }}</span>
+            </div>
+            <a href="{{ url_for('marketplace.order_detail', order_id=order.id) }}" class="btn btn-secondary btn-sm">
+                View Details →
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% else %}
+<div class="mp-empty">
+    <div class="mp-empty__icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    </div>
+    <h3>No orders yet</h3>
+    <p>Browse the marketplace and place your first order.</p>
+    <a href="{{ url_for('marketplace.index') }}" class="btn btn-primary">Browse Marketplace</a>
+</div>
+{% endif %}
+
+{% endblock %}

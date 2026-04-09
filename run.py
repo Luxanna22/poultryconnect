@@ -1,5 +1,5 @@
 from app import create_app, db
-from app.models import User, Farm, ProductionRecord, Expense
+from app.models import User, Farm, ProductionRecord, Expense, Product, Order, OrderItem
 
 app = create_app()
 
@@ -11,7 +11,12 @@ def make_shell_context():
         'Farm': Farm,
         'ProductionRecord': ProductionRecord,
         'Expense': Expense,
+        'Product': Product,
+        'Order': Order,
+        'OrderItem': OrderItem,
     }
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+#test commentt

@@ -1,0 +1,123 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Order #{{ order.id }} — PoultryConnect{% endblock %}
+{% block page_title %}Order #{{ order.id }}{% endblock %}
+{% block breadcrumb %}PoultryConnect / <a href="{{ url_for('marketplace.index') }}" style="color:var(--primary);">Marketplace</a> / <a href="{{ url_for('marketplace.orders') }}" style="color:var(--primary);">Orders</a> / #{{ order.id }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/marketplace.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="od-layout">
+
+    <!-- ═══ Order Items ═══ -->
+    <div class="od-main">
+        <div class="od-card">
+            <div class="od-card__header">
+                <div>
+                    <h3 class="od-card__title">Order Items</h3>
+                    <div class="od-card__sub">{{ order.item_count }} item{{ 's' if order.item_count != 1 }} in this order</div>
+                </div>
+                <div class="order-status order-status--{{ order.status.value }}">
+                    {{ order.status_label }}
+                </div>
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Unit Price</th>
+                        <th>Quantity</th>
+                        <th style="text-align:right;">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items %}
+                    <tr>
+                        <td>
+                            <div class="od-product-name">{{ item.product.name }}</div>
+                            <div class="od-product-farm">{{ item.product.farm.name }}</div>
+                        </td>
+                        <td>₱{{ "%.2f"|format(item.unit_price) }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td style="text-align:right; font-weight:700;">₱{{ "%.2f"|format(item.subtotal) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" style="text-align:right; font-weight:700; border-top: 2px solid var(--outline);">Total</td>
+                        <td style="text-align:right; font-weight:800; font-size:1.1rem; color:var(--primary); border-top: 2px solid var(--outline);">₱{{ "%.2f"|format(order.total_amount) }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <!-- ═══ Order Info Sidebar ═══ -->
+    <div class="od-sidebar">
+        <!-- Status Card -->
+        <div class="od-info-card">
+            <h4 class="od-info-card__title">Order Status</h4>
+            <div class="od-status-timeline">
+                {% set status_list = ['pending', 'confirmed', 'shipped', 'delivered'] %}
+                {% set current_idx = status_list.index(order.status.value) if order.status.value in status_list else -1 %}
+                {% for s in status_list %}
+                <div class="od-timeline-step {{ 'active' if loop.index0 <= current_idx else '' }} {{ 'current' if loop.index0 == current_idx else '' }}">
+                    <div class="od-timeline-dot"></div>
+                    <span>{{ s|replace('_',' ')|title }}</span>
+                </div>
+                {% endfor %}
+                {% if order.status.value == 'cancelled' %}
+                <div class="od-timeline-step active current cancelled">
+                    <div class="od-timeline-dot"></div>
+                    <span>Cancelled</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Delivery Info -->
+        <div class="od-info-card">
+            <h4 class="od-info-card__title">Delivery Details</h4>
+            <div class="od-info-row">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>{{ order.delivery_address }}</span>
+            </div>
+            <div class="od-info-row">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+                <span>{{ order.contact_phone }}</span>
+            </div>
+            {% if order.notes %}
+            <div class="od-info-row">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <span>{{ order.notes }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Order Meta -->
+        <div class="od-info-card">
+            <h4 class="od-info-card__title">Order Info</h4>
+            <div class="od-info-row">
+                <span class="od-info-label">Order ID</span>
+                <span>#{{ order.id }}</span>
+            </div>
+            <div class="od-info-row">
+                <span class="od-info-label">Placed on</span>
+                <span>{{ order.created_at.strftime('%b %d, %Y') }}</span>
+            </div>
+            <div class="od-info-row">
+                <span class="od-info-label">Payment</span>
+                <span>Cash on Delivery</span>
+            </div>
+        </div>
+
+        <a href="{{ url_for('marketplace.orders') }}" class="btn btn-secondary" style="width:100%; justify-content:center;">← Back to Orders</a>
+    </div>
+</div>
+
+{% endblock %}

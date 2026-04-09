@@ -1,0 +1,110 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Shopping Cart — PoultryConnect{% endblock %}
+{% block page_title %}Shopping Cart{% endblock %}
+{% block breadcrumb %}PoultryConnect / <a href="{{ url_for('marketplace.index') }}" style="color:var(--primary);">Marketplace</a> / Cart{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/marketplace.css') }}">
+{% endblock %}
+
+{% block content %}
+
+{% if cart_items %}
+<div class="cart-layout">
+
+    <!-- ═══ Cart Items ═══ -->
+    <div class="cart-items-wrap">
+        <div class="cart-items-card">
+            <div class="cart-items-header">
+                <h3 class="cart-items-title">Your Items ({{ cart_count }})</h3>
+                <a href="{{ url_for('marketplace.index') }}" class="cart-continue-link">← Continue Shopping</a>
+            </div>
+
+            {% for item in cart_items %}
+            <div class="cart-item" id="cartItem-{{ item.product.id }}">
+                <div class="cart-item__img">
+                    {% if item.product.category.value == 'eggs' %}🥚
+                    {% elif item.product.category.value == 'live_birds' %}🐔
+                    {% elif item.product.category.value == 'dressed' %}🍗
+                    {% else %}📦{% endif %}
+                </div>
+
+                <div class="cart-item__info">
+                    <a href="{{ url_for('marketplace.product_detail', product_id=item.product.id) }}" class="cart-item__name">{{ item.product.name }}</a>
+                    <div class="cart-item__farm">{{ item.product.farm.name }}</div>
+                    <div class="cart-item__unit-price">₱{{ "%.2f"|format(item.product.price) }} / {{ item.product.unit_label }}</div>
+                </div>
+
+                <div class="cart-item__controls">
+                    <form method="post" action="{{ url_for('marketplace.cart_update') }}" class="cart-qty-form">
+                        <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                        <div class="cart-qty-stepper">
+                            <button type="submit" name="quantity" value="{{ item.quantity - 1 }}" class="cart-qty-btn" {{ 'title=Remove' if item.quantity <= 1 }}>−</button>
+                            <span class="cart-qty-val">{{ item.quantity }}</span>
+                            <button type="submit" name="quantity" value="{{ item.quantity + 1 }}" class="cart-qty-btn" {{ 'disabled' if item.quantity >= item.product.stock }}>+</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="cart-item__subtotal">
+                    ₱{{ "%.2f"|format(item.subtotal) }}
+                </div>
+
+                <form method="post" action="{{ url_for('marketplace.cart_remove') }}">
+                    <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                    <button type="submit" class="cart-item__remove" title="Remove">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                    </button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- ═══ Cart Summary Sidebar ═══ -->
+    <div class="cart-summary">
+        <div class="cart-summary-card">
+            <h3 class="cart-summary__title">Order Summary</h3>
+
+            <div class="cart-summary__rows">
+                {% for item in cart_items %}
+                <div class="cart-summary__row">
+                    <span>{{ item.product.name }} × {{ item.quantity }}</span>
+                    <span>₱{{ "%.2f"|format(item.subtotal) }}</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="cart-summary__divider"></div>
+
+            <div class="cart-summary__total-row">
+                <span>Total</span>
+                <span class="cart-summary__total">₱{{ "%.2f"|format(cart_total) }}</span>
+            </div>
+
+            <div class="cart-summary__payment">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                Cash on Delivery
+            </div>
+
+            <a href="{{ url_for('marketplace.checkout') }}" class="btn btn-primary btn-lg cart-checkout-btn">
+                Proceed to Checkout →
+            </a>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<!-- ═══ Empty Cart ═══ -->
+<div class="mp-empty">
+    <div class="mp-empty__icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+    </div>
+    <h3>Your cart is empty</h3>
+    <p>Browse the marketplace and add products to get started.</p>
+    <a href="{{ url_for('marketplace.index') }}" class="btn btn-primary">Browse Marketplace</a>
+</div>
+{% endif %}
+
+{% endblock %}

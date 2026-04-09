@@ -1,0 +1,112 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}My Products — PoultryConnect{% endblock %}
+{% block page_title %}My Products{% endblock %}
+{% block breadcrumb %}PoultryConnect / Marketplace / Manage{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/marketplace.css') }}">
+{% endblock %}
+
+{% block topbar_actions %}
+<a href="{{ url_for('marketplace.manage_add') }}" class="btn btn-primary btn-sm">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Add Product
+</a>
+<a href="{{ url_for('marketplace.farmer_orders') }}" class="btn btn-secondary btn-sm">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    View Orders
+</a>
+{% endblock %}
+
+{% block content %}
+
+{% if products %}
+
+<!-- ═══ Stats Row ═══ -->
+<div class="manage-stats">
+    <div class="manage-stat">
+        <div class="manage-stat__val">{{ products|length }}</div>
+        <div class="manage-stat__label">Total Listings</div>
+    </div>
+    <div class="manage-stat">
+        <div class="manage-stat__val">{{ products|selectattr('is_available')|list|length }}</div>
+        <div class="manage-stat__label">Active</div>
+    </div>
+    <div class="manage-stat">
+        <div class="manage-stat__val">{{ products|rejectattr('is_available')|list|length }}</div>
+        <div class="manage-stat__label">Unlisted</div>
+    </div>
+</div>
+
+<!-- ═══ Products Grid ═══ -->
+<div class="manage-grid">
+    {% for product in products %}
+    <div class="manage-card {{ 'manage-card--inactive' if not product.is_available }}" id="manageProduct-{{ product.id }}">
+        <div class="manage-card__header">
+            <div class="manage-card__img">
+                {% if product.category.value == 'eggs' %}🥚
+                {% elif product.category.value == 'live_birds' %}🐔
+                {% elif product.category.value == 'dressed' %}🍗
+                {% else %}📦{% endif %}
+            </div>
+            <div class="manage-card__meta">
+                <div class="manage-card__name">{{ product.name }}</div>
+                <div class="manage-card__farm">{{ product.farm.name }}</div>
+            </div>
+            {% if not product.is_available %}
+            <span class="badge badge-inactive">Unlisted</span>
+            {% endif %}
+        </div>
+
+        <div class="manage-card__stats">
+            <div class="manage-card__stat">
+                <span class="manage-card__stat-val">₱{{ "%.2f"|format(product.price) }}</span>
+                <span class="manage-card__stat-label">Price / {{ product.unit_label }}</span>
+            </div>
+            <div class="manage-card__stat">
+                <span class="manage-card__stat-val mp-stock--{{ product.stock_label }}">{{ product.stock }}</span>
+                <span class="manage-card__stat-label">In Stock</span>
+            </div>
+            <div class="manage-card__stat">
+                <span class="manage-card__stat-val">{{ product.category_label }}</span>
+                <span class="manage-card__stat-label">Category</span>
+            </div>
+        </div>
+
+        <div class="manage-card__actions">
+            <a href="{{ url_for('marketplace.manage_edit', product_id=product.id) }}" class="btn btn-secondary btn-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Edit
+            </a>
+            <form method="post" action="{{ url_for('marketplace.manage_toggle', product_id=product.id) }}" style="display:inline;">
+                <button type="submit" class="btn {{ 'btn-danger-soft' if product.is_available else 'btn-primary' }} btn-sm">
+                    {% if product.is_available %}
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                    Unlist
+                    {% else %}
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    Relist
+                    {% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% else %}
+<div class="mp-empty">
+    <div class="mp-empty__icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    </div>
+    <h3>No products listed yet</h3>
+    <p>Start selling by listing your first product on the marketplace.</p>
+    <a href="{{ url_for('marketplace.manage_add') }}" class="btn btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Your First Product
+    </a>
+</div>
+{% endif %}
+
+{% endblock %}

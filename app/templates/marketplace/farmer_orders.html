@@ -1,0 +1,95 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Incoming Orders — PoultryConnect{% endblock %}
+{% block page_title %}Incoming Orders{% endblock %}
+{% block breadcrumb %}PoultryConnect / <a href="{{ url_for('marketplace.manage') }}" style="color:var(--primary);">My Products</a> / Orders{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/marketplace.css') }}">
+{% endblock %}
+
+{% block topbar_actions %}
+<a href="{{ url_for('marketplace.manage') }}" class="btn btn-secondary btn-sm">← My Products</a>
+{% endblock %}
+
+{% block content %}
+
+{% if orders %}
+<div class="fo-list">
+    {% for order in orders %}
+    <div class="fo-card" id="farmerOrder-{{ order.id }}">
+        <div class="fo-card__header">
+            <div class="fo-card__id-row">
+                <div>
+                    <span class="fo-card__label">Order</span>
+                    <span class="fo-card__num">#{{ order.id }}</span>
+                </div>
+                <div class="order-status order-status--{{ order.status.value }}">
+                    {{ order.status_label }}
+                </div>
+            </div>
+            <div class="fo-card__buyer">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                {{ order.buyer.full_name }}
+                <span class="fo-card__date">• {{ order.created_at.strftime('%b %d, %Y') }}</span>
+            </div>
+        </div>
+
+        <!-- Items from this farmer only -->
+        <div class="fo-card__items">
+            {% for item in order.items %}
+            {% if item.product_id in my_product_ids %}
+            <div class="fo-item-row">
+                <span class="fo-item-name">{{ item.product.name }}</span>
+                <span class="fo-item-qty">× {{ item.quantity }}</span>
+                <span class="fo-item-price">₱{{ "%.2f"|format(item.subtotal) }}</span>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="fo-card__footer">
+            <div class="fo-card__delivery">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                {{ order.delivery_address[:60] }}{{ '...' if order.delivery_address|length > 60 }}
+            </div>
+            <div class="fo-card__phone">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+                {{ order.contact_phone }}
+            </div>
+        </div>
+
+        <!-- Status Update -->
+        {% if order.status.value != 'delivered' and order.status.value != 'cancelled' %}
+        <form method="post" action="{{ url_for('marketplace.update_order_status', order_id=order.id) }}" class="fo-status-form">
+            <label for="statusSelect-{{ order.id }}" class="fo-status-label">Update Status:</label>
+            <div class="fo-status-controls">
+                <div class="select-wrap">
+                    <select id="statusSelect-{{ order.id }}" name="status">
+                        <option value="pending" {{ 'selected' if order.status.value == 'pending' }}>Pending</option>
+                        <option value="confirmed" {{ 'selected' if order.status.value == 'confirmed' }}>Confirmed</option>
+                        <option value="shipped" {{ 'selected' if order.status.value == 'shipped' }}>Shipped</option>
+                        <option value="delivered" {{ 'selected' if order.status.value == 'delivered' }}>Delivered</option>
+                        <option value="cancelled">Cancel Order</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm">Update</button>
+            </div>
+        </form>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+{% else %}
+<div class="mp-empty">
+    <div class="mp-empty__icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    </div>
+    <h3>No incoming orders</h3>
+    <p>Orders for your products will appear here.</p>
+    <a href="{{ url_for('marketplace.manage') }}" class="btn btn-secondary">← Back to Products</a>
+</div>
+{% endif %}
+
+{% endblock %}
