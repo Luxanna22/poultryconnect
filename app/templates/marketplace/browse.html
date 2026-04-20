@@ -6,139 +6,46 @@
 /* ═══ Hero ═══ */
 .shop-hero {
     background: var(--grad-primary);
-    padding: 3.5rem 0 3rem;
-    position: relative;
-    overflow: hidden;
-}
-
-.shop-hero::before {
-    content: '';
-    position: absolute;
-    width: 500px;
-    height: 500px;
-    background: rgba(255,255,255,0.04);
-    border-radius: 50%;
-    top: -250px;
-    right: -100px;
-}
-
-.shop-hero::after {
-    content: '';
-    position: absolute;
-    width: 350px;
-    height: 350px;
-    background: rgba(255,255,255,0.03);
-    border-radius: 50%;
-    bottom: -200px;
-    left: -80px;
+    padding: 0.75rem 0;
 }
 
 .shop-hero__inner {
-    max-width: 1280px;
+    max-width: 100%;
     margin: 0 auto;
     padding: 0 2rem;
-    position: relative;
-    z-index: 1;
+}
+
+.shop-hero__line {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: rgba(255,255,255,0.92);
+    font-size: 0.86rem;
+    font-weight: 500;
 }
 
 .shop-hero__tag {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    background: rgba(255,255,255,0.15);
-    color: rgba(255,255,255,0.9);
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    padding: 0.3rem 1rem;
-    border-radius: var(--radius-full);
-    margin-bottom: 1rem;
-    backdrop-filter: blur(4px);
-}
-
-.shop-hero__title {
-    font-family: var(--font-display);
-    font-size: 2.2rem;
-    font-weight: 800;
-    color: white;
-    line-height: 1.15;
-    margin-bottom: 0.6rem;
-    max-width: 500px;
-}
-
-.shop-hero__sub {
-    color: rgba(255,255,255,0.75);
-    font-size: 1rem;
-    max-width: 460px;
-    line-height: 1.6;
-    margin-bottom: 1.75rem;
-}
-
-/* Search */
-.shop-search {
-    display: flex;
-    gap: 0.75rem;
-    max-width: 560px;
-}
-
-.shop-search__wrap {
-    flex: 1;
-    position: relative;
-}
-
-.shop-search__icon {
-    position: absolute;
-    left: 1.1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 18px;
-    height: 18px;
-    color: var(--on-surface-variant);
-    pointer-events: none;
-}
-
-.shop-search__input {
-    width: 100%;
-    background: white;
-    border: none;
-    border-radius: var(--radius-full);
-    padding: 0.85rem 1.25rem 0.85rem 3.2rem;
-    font-size: 0.92rem;
-    font-family: var(--font-body);
-    color: var(--on-surface);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-    transition: box-shadow 0.25s;
-}
-
-.shop-search__input:focus {
-    outline: none;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.18);
-}
-
-.shop-search__input::placeholder {
-    color: var(--on-surface-variant);
-    opacity: 0.6;
-}
-
-.shop-search .btn {
     background: rgba(255,255,255,0.2);
     color: white;
-    border: 1.5px solid rgba(255,255,255,0.3);
-    backdrop-filter: blur(4px);
-    box-shadow: none;
-    padding: 0.85rem 1.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.2rem 0.75rem;
+    border-radius: var(--radius-full);
+    flex-shrink: 0;
 }
 
-.shop-search .btn:hover {
-    background: rgba(255,255,255,0.3);
-    transform: none;
-    box-shadow: none;
+.shop-hero__highlight {
+    font-weight: 700;
+    color: white;
 }
 
 /* ═══ Main Content ═══ */
 .shop-body {
-    max-width: 1280px;
+    max-width: 100%;
     margin: 0 auto;
     padding: 2rem 2rem 0;
 }
@@ -199,21 +106,44 @@
     color: var(--on-surface-variant);
 }
 
-.shop-sort__select {
-    background: white;
-    border: 1.5px solid var(--outline);
+.shop-sort__options {
+    display: flex;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+    background: var(--surface-container-low);
+    padding: 0.25rem;
     border-radius: var(--radius-full);
-    padding: 0.45rem 1rem;
+    border: 1px solid var(--outline);
+}
+
+.shop-sort__pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 128px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-full);
+    padding: 0.38rem 0.85rem;
     font-size: 0.82rem;
     font-weight: 600;
     font-family: var(--font-body);
-    color: var(--on-surface);
-    cursor: pointer;
+    color: var(--on-surface-variant);
+    text-decoration: none;
+    transition: all 0.2s;
 }
 
-.shop-sort__select:focus {
-    outline: none;
+.shop-sort__pill:hover {
+    border-color: var(--outline);
+    color: var(--primary);
+    background: var(--surface-container-lowest);
+}
+
+.shop-sort__pill.active {
+    background: var(--surface-container-lowest);
     border-color: var(--primary);
+    color: var(--primary);
+    box-shadow: 0 1px 8px rgba(13, 99, 27, 0.14);
 }
 
 /* Results count */
@@ -222,6 +152,9 @@
     color: var(--on-surface-variant);
     margin-bottom: 1.5rem;
     font-weight: 500;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .shop-results strong {
@@ -241,15 +174,16 @@
     background: white;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    border: 1px solid var(--outline);
+    border: 1px solid var(--outline-variant);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
     transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
     display: flex;
     flex-direction: column;
 }
 
 .shop-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 20px 50px rgba(0,31,42,0.1);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-ambient);
     border-color: var(--primary-fixed);
 }
 
@@ -338,11 +272,10 @@
 .shop-card__farm svg { flex-shrink: 0; }
 
 .shop-card__bottom {
-    margin-top: auto;
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    margin-bottom: 0.85rem;
+    margin-bottom: 1.25rem;
 }
 
 .shop-card__price {
@@ -363,6 +296,7 @@
     font-size: 0.72rem;
     font-weight: 600;
     font-family: var(--font-body);
+    text-align: right;
 }
 
 .avail--in_stock { color: #1b5e20; }
@@ -389,7 +323,14 @@
     text-decoration: none;
 }
 
-.shop-card__action:hover {
+.shop-card__action:disabled {
+    background: var(--surface-container);
+    color: var(--on-surface-variant);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.shop-card__action:not(:disabled):hover {
     opacity: 0.9;
     transform: translateY(-1px);
 }
@@ -407,6 +348,10 @@
 }
 
 .shop-card__action svg { width: 15px; height: 15px; }
+
+.shop-card__purchase {
+    margin-top: 0.5rem;
+}
 
 /* ═══ Empty ═══ */
 .shop-empty {
@@ -449,9 +394,8 @@
 }
 
 @media (max-width: 768px) {
-    .shop-hero { padding: 2rem 0 1.5rem; }
-    .shop-hero__title { font-size: 1.6rem; }
-    .shop-search { flex-direction: column; }
+    .shop-hero__inner { padding: 0 1rem; }
+    .shop-hero__line { font-size: 0.78rem; }
     .shop-grid { grid-template-columns: repeat(2, 1fr); }
     .shop-body { padding: 1.5rem 1rem 0; }
     .shop-toolbar { flex-direction: column; align-items: flex-start; }
@@ -459,7 +403,8 @@
 
 @media (max-width: 480px) {
     .shop-grid { grid-template-columns: 1fr; }
-    .shop-hero__title { font-size: 1.35rem; }
+    .shop-hero__line { display: block; line-height: 1.5; }
+    .shop-hero__tag { margin-bottom: 0.3rem; }
 }
 {% endblock %}
 
@@ -468,19 +413,10 @@
 <!-- ═══ Hero Banner ═══ -->
 <div class="shop-hero">
     <div class="shop-hero__inner">
-        <div class="shop-hero__tag">🛒 PoultryConnect Marketplace</div>
-        <h1 class="shop-hero__title">Fresh Poultry &amp; Eggs, Direct from the Farm</h1>
-        <p class="shop-hero__sub">Support local farmers. Buy premium eggs, live birds, and dressed chicken — shipped fresh to your doorstep.</p>
-
-        <form method="get" action="{{ url_for('marketplace.index') }}" class="shop-search" id="shopSearchForm">
-            <div class="shop-search__wrap">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shop-search__icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <input type="text" name="q" value="{{ search }}" placeholder="Search eggs, chicken, farm name..." class="shop-search__input" id="shopSearch">
-            </div>
-            <input type="hidden" name="category" value="{{ category }}">
-            <input type="hidden" name="sort" value="{{ sort_by }}">
-            <button type="submit" class="btn">Search</button>
-        </form>
+        <p class="shop-hero__line">
+            <span class="shop-hero__tag">Marketplace</span>
+            <span class="shop-hero__highlight">Fresh Poultry &amp; Eggs</span> direct from local farms.
+        </p>
     </div>
 </div>
 
@@ -495,18 +431,17 @@
             {% for cat in categories %}
             <a href="{{ url_for('marketplace.index', q=search, category=cat.value, sort=sort_by) }}"
                class="shop-chip {{ 'active' if category == cat.value }}">
-                {% if cat.value == 'eggs' %}🥚{% elif cat.value == 'live_birds' %}🐔{% elif cat.value == 'dressed' %}🍗{% else %}📦{% endif %}
                 {{ cat.value | replace('_', ' ') | title }}
             </a>
             {% endfor %}
         </div>
         <div class="shop-sort">
-            <span class="shop-sort__label">Sort by</span>
-            <select id="sortSelect" class="shop-sort__select" onchange="applySort(this.value)">
-                <option value="newest" {{ 'selected' if sort_by == 'newest' }}>Newest</option>
-                <option value="price_low" {{ 'selected' if sort_by == 'price_low' }}>Cheapest</option>
-                <option value="price_high" {{ 'selected' if sort_by == 'price_high' }}>Priciest</option>
-            </select>
+            <span class="shop-sort__label">Sort</span>
+            <div class="shop-sort__options" role="group" aria-label="Sort products">
+                <a href="{{ url_for('marketplace.index', q=search, category=category, sort='newest') }}" class="shop-sort__pill {{ 'active' if sort_by == 'newest' }}">Recommended</a>
+                <a href="{{ url_for('marketplace.index', q=search, category=category, sort='price_low') }}" class="shop-sort__pill {{ 'active' if sort_by == 'price_low' }}">Price: Low to High</a>
+                <a href="{{ url_for('marketplace.index', q=search, category=category, sort='price_high') }}" class="shop-sort__pill {{ 'active' if sort_by == 'price_high' }}">Price: High to Low</a>
+            </div>
         </div>
     </div>
 
@@ -548,44 +483,38 @@
                     </div>
                 </div>
 
-                {% if current_user.is_authenticated and current_user.role.value == 'buyer' %}
-                <form method="post" action="{{ url_for('marketplace.cart_add') }}">
-                    <input type="hidden" name="product_id" value="{{ product.id }}">
-                    <input type="hidden" name="quantity" value="1">
-                    <button type="submit" class="shop-card__action">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
-                        Add to Cart
-                    </button>
-                </form>
-                {% elif not current_user.is_authenticated %}
-                <a href="{{ url_for('auth.login') }}" class="shop-card__action shop-card__action--ghost">Sign in to Buy</a>
-                {% endif %}
+                <div class="shop-card__purchase" style="margin-top: auto;">
+                    {% if current_user.is_authenticated and current_user.role.value == 'buyer' %}
+                    <form method="post" action="{{ url_for('marketplace.cart_add') }}" class="add-to-cart-form">
+                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="shop-card__action" {{ 'disabled' if product.stock_label == 'out_of_stock' }}>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+                            Add to Cart
+                        </button>
+                    </form>
+                    {% elif not current_user.is_authenticated %}
+                    <a href="{{ url_for('auth.login') }}" class="shop-card__action shop-card__action--ghost">Sign in to Buy</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
         {% endfor %}
     </div>
 
     {% else %}
-    <div class="shop-empty">
-        <div class="shop-empty__icon">🛒</div>
+    <div class="mp-empty">
+        <div class="mp-empty__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+        </div>
         <h3>No products found</h3>
         <p>{% if search or category %}Try adjusting your filters or search for something else.{% else %}The marketplace is waiting for fresh products. Check back soon!{% endif %}</p>
         {% if search or category %}
-        <a href="{{ url_for('marketplace.index') }}" class="btn btn-secondary">Clear All Filters</a>
+        <a href="{{ url_for('marketplace.index') }}" class="btn btn-secondary" style="margin: 0 auto;">Clear All Filters</a>
         {% endif %}
     </div>
     {% endif %}
 
 </div>
 
-{% endblock %}
-
-{% block extra_js %}
-<script>
-function applySort(value) {
-    const url = new URL(window.location.href);
-    url.searchParams.set('sort', value);
-    window.location.href = url.toString();
-}
-</script>
 {% endblock %}

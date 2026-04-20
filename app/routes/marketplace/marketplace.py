@@ -206,15 +206,21 @@ def cart_add():
     quantity   = _safe_int(request.form.get('quantity', 1), default=1)
 
     if quantity < 1:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.is_json:
+            return {'status': 'error', 'message': 'Invalid quantity.'}
         flash('Invalid quantity.', 'error')
         return redirect(request.referrer or url_for('marketplace.index'))
 
     product = Product.query.get(product_id)
     if not product or not product.is_available:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.is_json:
+            return {'status': 'error', 'message': 'Product not available.'}
         flash('Product not available.', 'error')
         return redirect(url_for('marketplace.index'))
 
     if quantity > product.stock:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.is_json:
+            return {'status': 'error', 'message': f'Only {product.stock} available in stock.'}
         flash(f'Only {product.stock} available in stock.', 'error')
         return redirect(url_for('marketplace.product_detail', product_id=product_id))
 
@@ -224,11 +230,17 @@ def cart_add():
     new_qty = current_qty + quantity
 
     if new_qty > product.stock:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.is_json:
+            return {'status': 'error', 'message': f'Cannot add more. Only {product.stock} available (you have {current_qty} in cart).'}
         flash(f'Cannot add more. Only {product.stock} available (you have {current_qty} in cart).', 'error')
         return redirect(url_for('marketplace.product_detail', product_id=product_id))
 
     cart[pid_str] = new_qty
     _save_cart(cart)
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.is_json:
+        return {'status': 'success', 'message': f'"{product.name}" added to cart.', 'cart_count': _get_cart_count()}
+        
     flash(f'"{product.name}" added to cart.', 'success')
     return redirect(request.referrer or url_for('marketplace.index'))
 
@@ -245,6 +257,8 @@ def cart_update():
     pid_str = str(product_id)
 
     if pid_str not in cart:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.is_json:
+            return {'status': 'error', 'message': 'Item not in cart.', 'cart_count': _get_cart_count()}
         flash('Item not in cart.', 'error')
         return redirect(url_for('marketplace.cart'))
 
@@ -252,16 +266,22 @@ def cart_update():
         # Remove from cart
         del cart[pid_str]
         _save_cart(cart)
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.is_json:
+            return {'status': 'success', 'message': 'Item removed from cart.', 'cart_count': _get_cart_count()}
         flash('Item removed from cart.', 'success')
         return redirect(url_for('marketplace.cart'))
 
     product = Product.query.get(product_id)
     if product and quantity > product.stock:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.is_json:
+            return {'status': 'error', 'message': f'Only {product.stock} available.', 'cart_count': _get_cart_count()}
         flash(f'Only {product.stock} available.', 'error')
         return redirect(url_for('marketplace.cart'))
 
     cart[pid_str] = quantity
     _save_cart(cart)
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.is_json:
+        return {'status': 'success', 'message': 'Cart updated.', 'cart_count': _get_cart_count()}
     flash('Cart updated.', 'success')
     return redirect(url_for('marketplace.cart'))
 

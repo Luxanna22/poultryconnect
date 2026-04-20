@@ -1,90 +1,169 @@
-{% extends "dashboard_base.html" %}
+{% extends "marketplace/marketplace_base.html" %} {% block title %}Checkout —
+PoultryConnect{% endblock %} {% block extra_css %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/marketplace.css') }}"
+/>
+{% endblock %} {% block content %}
+<div
+  class="mp-container"
+  style="padding: 2rem 1.5rem; max-width: 1200px; margin: 0 auto"
+>
+  <h1
+    style="
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--on-surface);
+      margin-bottom: 1.5rem;
+    "
+  >
+    Checkout
+  </h1>
 
-{% block title %}Checkout — PoultryConnect{% endblock %}
-{% block page_title %}Checkout{% endblock %}
-{% block breadcrumb %}PoultryConnect / <a href="{{ url_for('marketplace.index') }}" style="color:var(--primary);">Marketplace</a> / <a href="{{ url_for('marketplace.cart') }}" style="color:var(--primary);">Cart</a> / Checkout{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/marketplace.css') }}">
-{% endblock %}
-
-{% block content %}
-
-<div class="checkout-layout">
-
+  <div class="checkout-layout">
     <!-- ═══ Checkout Form ═══ -->
     <div class="checkout-form-wrap">
-        <form method="post" action="{{ url_for('marketplace.checkout') }}" class="data-form">
-            <div class="form-card">
-                <div class="form-card__header">
-                    <div class="form-card__title">Delivery Information</div>
-                    <div class="form-card__sub">Fill in your delivery details to complete your order.</div>
-                </div>
-
-                <div class="form-group">
-                    <label for="deliveryAddress">Delivery Address <span class="required">*</span></label>
-                    <textarea id="deliveryAddress" name="delivery_address" rows="3"
-                              placeholder="Complete delivery address (street, barangay, city, province)"
-                              required>{{ form_data.get('delivery_address', '') }}</textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="contactPhone">Contact Phone <span class="required">*</span></label>
-                    <input type="text" id="contactPhone" name="contact_phone"
-                           value="{{ form_data.get('contact_phone', current_user.phone or '') }}"
-                           placeholder="Mobile number (e.g. 09171234567)" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="orderNotes">Notes <span style="font-weight:400; text-transform:none; letter-spacing:normal;">(optional)</span></label>
-                    <textarea id="orderNotes" name="notes" rows="2"
-                              placeholder="Any special instructions for the farmer or delivery...">{{ form_data.get('notes', '') }}</textarea>
-                </div>
-
-                <!-- Payment Method Info -->
-                <div class="checkout-payment-info">
-                    <div class="checkout-payment-badge">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                        Cash on Delivery
-                    </div>
-                    <p>Pay when you receive your order. No online payment required.</p>
-                </div>
-
-                <div class="form-actions">
-                    <a href="{{ url_for('marketplace.cart') }}" class="btn btn-secondary">← Back to Cart</a>
-                    <button type="submit" class="btn btn-primary btn-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>
-                        Place Order
-                    </button>
-                </div>
+      <form
+        method="post"
+        action="{{ url_for('marketplace.checkout') }}"
+        class="data-form"
+      >
+        <div class="form-card">
+          <div class="form-card__header">
+            <div class="form-card__title">Delivery Information</div>
+            <div class="form-card__sub">
+              Fill in your delivery details to complete your order.
             </div>
-        </form>
+          </div>
+
+          <div class="form-group">
+            <label for="deliveryAddress"
+              >Delivery Address <span class="required">*</span></label
+            >
+            <textarea
+              id="deliveryAddress"
+              name="delivery_address"
+              rows="3"
+              placeholder="Complete delivery address (street, barangay, city, province)"
+              required
+            >
+{{ form_data.get('delivery_address', '') }}</textarea
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="contactPhone"
+              >Contact Phone <span class="required">*</span></label
+            >
+            <input
+              type="text"
+              id="contactPhone"
+              name="contact_phone"
+              value="{{ form_data.get('contact_phone', current_user.phone or '') }}"
+              placeholder="Mobile number (e.g. 09171234567)"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="orderNotes"
+              >Notes
+              <span
+                style="
+                  font-weight: 400;
+                  text-transform: none;
+                  letter-spacing: normal;
+                "
+                >(optional)</span
+              ></label
+            >
+            <textarea
+              id="orderNotes"
+              name="notes"
+              rows="2"
+              placeholder="Any special instructions for the farmer or delivery..."
+            >
+{{ form_data.get('notes', '') }}</textarea
+            >
+          </div>
+
+          <!-- Payment Method Info -->
+          <div class="checkout-payment-info">
+            <div class="checkout-payment-badge">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                width="18"
+                height="18"
+              >
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+                <line x1="1" y1="10" x2="23" y2="10" />
+              </svg>
+              Cash on Delivery
+            </div>
+            <p>Pay when you receive your order. No online payment required.</p>
+          </div>
+
+          <div class="form-actions">
+            <a
+              href="{{ url_for('marketplace.cart') }}"
+              class="btn btn-secondary"
+              >← Back to Cart</a
+            >
+            <button type="submit" class="btn btn-primary btn-lg">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                width="16"
+                height="16"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              Place Order
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
 
     <!-- ═══ Order Summary ═══ -->
     <div class="cart-summary">
-        <div class="cart-summary-card">
-            <h3 class="cart-summary__title">Order Summary</h3>
+      <div class="cart-summary-card">
+        <h3 class="cart-summary__title">Order Summary</h3>
 
-            <div class="cart-summary__rows">
-                {% for item in cart_items %}
-                <div class="cart-summary__row">
-                    <span class="cart-summary__item-name">{{ item.product.name }} × {{ item.quantity }}</span>
-                    <span>₱{{ "%.2f"|format(item.subtotal) }}</span>
-                </div>
-                {% endfor %}
-            </div>
-
-            <div class="cart-summary__divider"></div>
-
-            <div class="cart-summary__total-row">
-                <span>Total</span>
-                <span class="cart-summary__total">₱{{ "%.2f"|format(cart_total) }}</span>
-            </div>
-
-            <div class="cart-summary__items-note">{{ cart_items|length }} item{{ 's' if cart_items|length != 1 }}</div>
+        <div class="cart-summary__rows">
+          {% for item in cart_items %}
+          <div class="cart-summary__row">
+            <span class="cart-summary__item-name"
+              >{{ item.product.name }} × {{ item.quantity }}</span
+            >
+            <span>₱{{ "%.2f"|format(item.subtotal) }}</span>
+          </div>
+          {% endfor %}
         </div>
+
+        <div class="cart-summary__divider"></div>
+
+        <div class="cart-summary__total-row">
+          <span>Total</span>
+          <span class="cart-summary__total"
+            >₱{{ "%.2f"|format(cart_total) }}</span
+          >
+        </div>
+
+        <div class="cart-summary__items-note">
+          {{ cart_items|length }} item{{ 's' if cart_items|length != 1 }}
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 {% endblock %}

@@ -1,512 +1,332 @@
-{% extends "marketplace/marketplace_base.html" %}
-
-{% block title %}{{ product.name }} — PoultryConnect Marketplace{% endblock %}
-
-{% block extra_style %}
-/* ═══ Breadcrumb ═══ */
-.pd-breadcrumb {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 1.25rem 2rem 0;
-    font-size: 0.82rem;
-    color: var(--on-surface-variant);
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-}
-
-.pd-breadcrumb a {
-    color: var(--primary);
-    text-decoration: none;
-    font-weight: 600;
-    transition: opacity 0.18s;
-}
-
-.pd-breadcrumb a:hover { opacity: 0.7; }
-.pd-breadcrumb__sep { color: var(--outline); }
-
-/* ═══ Layout ═══ */
-.pd-page {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 1.5rem 2rem 0;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-    align-items: start;
-}
-
-/* ═══ Visual ═══ */
-.pd-visual {
-    position: relative;
-}
-
-.pd-img {
-    background: linear-gradient(145deg, #f0faf0 0%, var(--surface-container-low) 100%);
-    border-radius: var(--radius-lg);
-    height: 420px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--outline);
-    position: relative;
-    overflow: hidden;
-}
-
-.pd-img::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, transparent 50%, rgba(13,99,27,0.03) 100%);
-}
-
-.pd-img__emoji {
-    font-size: 7rem;
-    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.08));
-    z-index: 1;
-}
-
-.pd-badge {
-    position: absolute;
-    top: 1.25rem;
-    left: 1.25rem;
-    background: white;
-    color: var(--primary);
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    padding: 0.35rem 1rem;
-    border-radius: var(--radius-full);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    font-family: var(--font-body);
-    z-index: 2;
-}
-
-/* ═══ Info Panel ═══ */
-.pd-info__name {
-    font-family: var(--font-display);
-    font-size: 1.75rem;
-    font-weight: 800;
-    color: var(--on-surface);
-    line-height: 1.2;
-    margin-bottom: 0.5rem;
-}
-
-.pd-info__farm-row {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.85rem;
-    color: var(--on-surface-variant);
-    margin-bottom: 1.5rem;
-}
-
-.pd-info__farm-row svg { flex-shrink: 0; }
-
-.pd-info__price-block {
-    background: var(--surface-container-low);
-    border-radius: var(--radius-md);
-    padding: 1.25rem 1.5rem;
-    margin-bottom: 1.5rem;
-    border-left: 4px solid var(--primary);
-}
-
-.pd-info__price {
-    font-family: var(--font-display);
-    font-size: 2.25rem;
-    font-weight: 800;
-    color: var(--primary);
-    line-height: 1;
-}
-
-.pd-info__unit {
-    font-size: 0.9rem;
-    color: var(--on-surface-variant);
-    margin-top: 0.25rem;
-}
-
-/* Stock */
-.pd-stock {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.45rem 1rem;
-    border-radius: var(--radius-full);
-    font-size: 0.82rem;
-    font-weight: 600;
-    font-family: var(--font-body);
-    margin-bottom: 1.5rem;
-}
-
-.pd-stock--in_stock    { background: #e8f5e9; color: #1b5e20; }
-.pd-stock--low_stock   { background: #fff8e1; color: #e65100; }
-.pd-stock--out_of_stock { background: #ffdad6; color: #ba1a1a; }
-
-/* Description */
-.pd-desc {
-    margin-bottom: 1.75rem;
-}
-
-.pd-desc h3 {
-    font-family: var(--font-display);
-    font-size: 0.92rem;
-    font-weight: 700;
-    color: var(--on-surface);
-    margin-bottom: 0.5rem;
-}
-
-.pd-desc p {
-    font-size: 0.9rem;
-    color: var(--on-surface-variant);
-    line-height: 1.7;
-}
-
-/* Quantity */
-.pd-cart-form { margin-bottom: 1.5rem; }
-
-.pd-qty-wrap { margin-bottom: 1rem; }
-
-.pd-qty-label {
-    display: block;
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--on-surface-variant);
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    margin-bottom: 0.5rem;
-}
-
-.pd-qty-stepper {
-    display: flex;
-    align-items: center;
-    border: 1.5px solid var(--outline);
-    border-radius: var(--radius-sm);
-    overflow: hidden;
-    width: fit-content;
-}
-
-.pd-qty-btn {
-    width: 44px;
-    height: 44px;
-    background: var(--surface-container-low);
-    border: none;
-    color: var(--on-surface);
-    font-size: 1.2rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.18s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.pd-qty-btn:hover { background: var(--surface-container); }
-
-.pd-qty-input {
-    width: 64px;
-    height: 44px;
-    text-align: center;
-    border: none;
-    border-left: 1.5px solid var(--outline);
-    border-right: 1.5px solid var(--outline);
-    font-family: var(--font-display);
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--on-surface);
-    background: white;
-    -moz-appearance: textfield;
-}
-
-.pd-qty-input::-webkit-outer-spin-button,
-.pd-qty-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-}
-
-.pd-add-btn {
-    width: 100%;
-    justify-content: center;
-    padding: 0.85rem;
-    font-size: 0.95rem;
-    border-radius: var(--radius-sm);
-    box-shadow: 0 4px 16px rgba(13,99,27,0.2);
-}
-
-/* Farm Card */
-.pd-farm-card {
-    background: white;
-    border-radius: var(--radius-md);
-    padding: 1.25rem;
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    border: 1px solid var(--outline);
-}
-
-.pd-farm-card__icon {
-    width: 48px;
-    height: 48px;
-    border-radius: var(--radius-sm);
-    background: var(--primary-fixed);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--primary);
-    flex-shrink: 0;
-    font-size: 1.4rem;
-}
-
-.pd-farm-card__name {
-    font-family: var(--font-display);
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--on-surface);
-    margin-bottom: 0.2rem;
-}
-
-.pd-farm-card__location,
-.pd-farm-card__farmer {
-    font-size: 0.8rem;
-    color: var(--on-surface-variant);
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    margin-top: 0.15rem;
-}
-
-/* Payment */
-.pd-payment {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.85rem 1.15rem;
-    background: var(--surface-container-low);
-    border-radius: var(--radius-sm);
-    font-size: 0.82rem;
-    color: var(--on-surface-variant);
-    border: 1px solid var(--outline);
-}
-
-.pd-payment strong {
-    color: var(--on-surface);
-}
-
-/* ═══ Related ═══ */
-.pd-related-section {
-    max-width: 1280px;
-    margin: 3rem auto 0;
-    padding: 0 2rem;
-}
-
-.pd-related__title {
-    font-family: var(--font-display);
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--on-surface);
-    margin-bottom: 1.25rem;
-}
-
-.pd-related__grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-}
-
-.pd-related__card {
-    background: white;
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    border: 1px solid var(--outline);
-    transition: transform 0.2s, box-shadow 0.2s;
-    text-decoration: none;
-}
-
-.pd-related__card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-ambient);
-}
-
-.pd-related__img {
-    height: 90px;
-    background: var(--surface-container-low);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.2rem;
-}
-
-.pd-related__info { padding: 0.85rem; }
-
-.pd-related__name {
-    font-family: var(--font-display);
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: var(--on-surface);
-    margin-bottom: 0.2rem;
-    line-height: 1.3;
-}
-
-.pd-related__price {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--primary);
-    font-family: var(--font-display);
-}
-
-/* ═══ Responsive ═══ */
-@media (max-width: 1024px) {
-    .pd-page { grid-template-columns: 1fr; gap: 2rem; }
-    .pd-img { height: 320px; }
-    .pd-related__grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 768px) {
-    .pd-page { padding: 1rem 1rem 0; }
-    .pd-breadcrumb { padding: 1rem 1rem 0; }
-    .pd-related-section { padding: 0 1rem; }
-    .pd-img { height: 250px; }
-    .pd-img__emoji { font-size: 5rem; }
-    .pd-info__name { font-size: 1.35rem; }
-    .pd-info__price { font-size: 1.75rem; }
-}
-
-@media (max-width: 480px) {
-    .pd-related__grid { grid-template-columns: 1fr; }
-}
-{% endblock %}
-
-{% block content %}
+{% extends "marketplace/marketplace_base.html" %} {% block title %}{{
+product.name }} — PoultryConnect Marketplace{% endblock %} {% block extra_style
+%} /* ═══ Breadcrumb ═══ */ .pd-breadcrumb { max-width: 100%; padding: 1.25rem
+2rem 0; font-size: 0.82rem; color: var(--on-surface-variant); display: flex;
+align-items: center; gap: 0.4rem; } .pd-breadcrumb a { color: var(--primary);
+text-decoration: none; font-weight: 600; transition: opacity 0.18s; }
+.pd-breadcrumb a:hover { opacity: 0.7; } .pd-breadcrumb__sep { color:
+var(--outline); } /* ═══ Layout ═══ */ .pd-page { max-width: 100%; padding:
+1.5rem 2rem 0; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;
+align-items: start; } /* ═══ Visual ═══ */ .pd-visual { position: relative; }
+.pd-img { background: linear-gradient(145deg, #f0faf0 0%,
+var(--surface-container-low) 100%); border-radius: var(--radius-lg); height:
+420px; display: flex; align-items: center; justify-content: center; border: 1px
+solid var(--outline); position: relative; overflow: hidden; } .pd-img::after {
+content: ''; position: absolute; inset: 0; background: linear-gradient(135deg,
+transparent 50%, rgba(13,99,27,0.03) 100%); } .pd-img__emoji { font-size: 7rem;
+filter: drop-shadow(0 8px 20px rgba(0,0,0,0.08)); z-index: 1; } .pd-badge {
+position: absolute; top: 1.25rem; left: 1.25rem; background: white; color:
+var(--primary); font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+letter-spacing: 0.07em; padding: 0.35rem 1rem; border-radius:
+var(--radius-full); box-shadow: 0 2px 10px rgba(0,0,0,0.08); font-family:
+var(--font-body); z-index: 2; } /* ═══ Info Panel ═══ */ .pd-info__name {
+font-family: var(--font-display); font-size: 1.75rem; font-weight: 800; color:
+var(--on-surface); line-height: 1.2; margin-bottom: 0.5rem; } .pd-info__farm-row
+{ display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color:
+var(--on-surface-variant); margin-bottom: 1.5rem; } .pd-info__farm-row svg {
+flex-shrink: 0; } .pd-info__price-block { background:
+var(--surface-container-low); border-radius: var(--radius-md); padding: 1.25rem
+1.5rem; margin-bottom: 1.5rem; border-left: 4px solid var(--primary); }
+.pd-info__price { font-family: var(--font-display); font-size: 2.25rem;
+font-weight: 800; color: var(--primary); line-height: 1; } .pd-info__unit {
+font-size: 0.9rem; color: var(--on-surface-variant); margin-top: 0.25rem; } /*
+Stock */ .pd-stock { display: inline-flex; align-items: center; gap: 0.4rem;
+padding: 0.45rem 1rem; border-radius: var(--radius-full); font-size: 0.82rem;
+font-weight: 600; font-family: var(--font-body); margin-bottom: 1.5rem; }
+.pd-stock--in_stock { background: #e8f5e9; color: #1b5e20; }
+.pd-stock--low_stock { background: #fff8e1; color: #e65100; }
+.pd-stock--out_of_stock { background: #ffdad6; color: #ba1a1a; } /* Description
+*/ .pd-desc { margin-bottom: 1.75rem; } .pd-desc h3 { font-family:
+var(--font-display); font-size: 0.92rem; font-weight: 700; color:
+var(--on-surface); margin-bottom: 0.5rem; } .pd-desc p { font-size: 0.9rem;
+color: var(--on-surface-variant); line-height: 1.7; } /* Quantity */
+.pd-cart-form { margin-bottom: 1.5rem; } .pd-qty-wrap { margin-bottom: 1rem; }
+.pd-qty-label { display: block; font-size: 0.78rem; font-weight: 600; color:
+var(--on-surface-variant); text-transform: uppercase; letter-spacing: 0.07em;
+margin-bottom: 0.5rem; } .pd-qty-stepper { display: flex; align-items: center;
+border: 1.5px solid var(--outline); border-radius: var(--radius-sm); overflow:
+hidden; width: fit-content; } .pd-qty-btn { width: 44px; height: 44px;
+background: var(--surface-container-low); border: none; color:
+var(--on-surface); font-size: 1.2rem; font-weight: 700; cursor: pointer;
+transition: background 0.18s; display: flex; align-items: center;
+justify-content: center; } .pd-qty-btn:hover { background:
+var(--surface-container); } .pd-qty-input { width: 64px; height: 44px;
+text-align: center; border: none; border-left: 1.5px solid var(--outline);
+border-right: 1.5px solid var(--outline); font-family: var(--font-display);
+font-size: 1rem; font-weight: 700; color: var(--on-surface); background: white;
+-moz-appearance: textfield; } .pd-qty-input::-webkit-outer-spin-button,
+.pd-qty-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.pd-add-btn { width: 100%; justify-content: center; padding: 0.85rem; font-size:
+0.95rem; border-radius: var(--radius-sm); box-shadow: 0 4px 16px
+rgba(13,99,27,0.2); } /* Farm Card */ .pd-farm-card { background: white;
+border-radius: var(--radius-md); padding: 1.25rem; display: flex; align-items:
+flex-start; gap: 1rem; margin-bottom: 1rem; border: 1px solid var(--outline); }
+.pd-farm-card__icon { width: 48px; height: 48px; border-radius:
+var(--radius-sm); background: var(--primary-fixed); display: flex; align-items:
+center; justify-content: center; color: var(--primary); flex-shrink: 0;
+font-size: 1.4rem; } .pd-farm-card__name { font-family: var(--font-display);
+font-size: 0.95rem; font-weight: 700; color: var(--on-surface); margin-bottom:
+0.2rem; } .pd-farm-card__location, .pd-farm-card__farmer { font-size: 0.8rem;
+color: var(--on-surface-variant); display: flex; align-items: center; gap:
+0.35rem; margin-top: 0.15rem; } /* Payment */ .pd-payment { display: flex;
+align-items: center; gap: 0.6rem; padding: 0.85rem 1.15rem; background:
+var(--surface-container-low); border-radius: var(--radius-sm); font-size:
+0.82rem; color: var(--on-surface-variant); border: 1px solid var(--outline); }
+.pd-payment strong { color: var(--on-surface); } /* ═══ Related ═══ */
+.pd-related-section { max-width: 100%; margin: 3rem auto 0; padding: 0 2rem; }
+.pd-related__title { font-family: var(--font-display); font-size: 1.2rem;
+font-weight: 700; color: var(--on-surface); margin-bottom: 1.25rem; }
+.pd-related__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap:
+1rem; } .pd-related__card { background: white; border-radius: var(--radius-md);
+overflow: hidden; border: 1px solid var(--outline); transition: transform 0.2s,
+box-shadow 0.2s; text-decoration: none; } .pd-related__card:hover { transform:
+translateY(-4px); box-shadow: var(--shadow-ambient); } .pd-related__img {
+height: 90px; background: var(--surface-container-low); display: flex;
+align-items: center; justify-content: center; font-size: 2.2rem; }
+.pd-related__info { padding: 0.85rem; } .pd-related__name { font-family:
+var(--font-display); font-size: 0.82rem; font-weight: 700; color:
+var(--on-surface); margin-bottom: 0.2rem; line-height: 1.3; } .pd-related__price
+{ font-size: 0.8rem; font-weight: 700; color: var(--primary); font-family:
+var(--font-display); } /* ═══ Responsive ═══ */ @media (max-width: 1024px) {
+.pd-page { grid-template-columns: 1fr; gap: 2rem; } .pd-img { height: 320px; }
+.pd-related__grid { grid-template-columns: repeat(2, 1fr); } } @media
+(max-width: 768px) { .pd-page { padding: 1rem 1rem 0; } .pd-breadcrumb {
+padding: 1rem 1rem 0; } .pd-related-section { padding: 0 1rem; } .pd-img {
+height: 250px; } .pd-img__emoji { font-size: 5rem; } .pd-info__name { font-size:
+1.35rem; } .pd-info__price { font-size: 1.75rem; } } @media (max-width: 480px) {
+.pd-related__grid { grid-template-columns: 1fr; } } {% endblock %} {% block
+content %}
 
 <!-- Breadcrumb -->
 <div class="pd-breadcrumb">
-    <a href="{{ url_for('marketplace.index') }}">Marketplace</a>
-    <span class="pd-breadcrumb__sep">›</span>
-    <a href="{{ url_for('marketplace.index', category=product.category.value) }}">{{ product.category_label }}</a>
-    <span class="pd-breadcrumb__sep">›</span>
-    <span>{{ product.name }}</span>
+  <a href="{{ url_for('marketplace.index') }}">Marketplace</a>
+  <span class="pd-breadcrumb__sep">›</span>
+  <a href="{{ url_for('marketplace.index', category=product.category.value) }}"
+    >{{ product.category_label }}</a
+  >
+  <span class="pd-breadcrumb__sep">›</span>
+  <span>{{ product.name }}</span>
 </div>
 
 <!-- Product Detail -->
 <div class="pd-page">
-    <!-- Left: Visual -->
-    <div class="pd-visual">
-        <div class="pd-img">
-            <span class="pd-badge">{{ product.category_label }}</span>
-            <span class="pd-img__emoji">
-                {% if product.category.value == 'eggs' %}🥚{% elif product.category.value == 'live_birds' %}🐔{% elif product.category.value == 'dressed' %}🍗{% else %}📦{% endif %}
-            </span>
-        </div>
+  <!-- Left: Visual -->
+  <div class="pd-visual">
+    <div class="pd-img">
+      <span class="pd-badge">{{ product.category_label }}</span>
+      <span class="pd-img__emoji">
+        {% if product.category.value == 'eggs' %}🥚{% elif
+        product.category.value == 'live_birds' %}🐔{% elif
+        product.category.value == 'dressed' %}🍗{% else %}📦{% endif %}
+      </span>
+    </div>
+  </div>
+
+  <!-- Right: Info -->
+  <div class="pd-info">
+    <h1 class="pd-info__name">{{ product.name }}</h1>
+    <div class="pd-info__farm-row">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        width="14"
+        height="14"
+      >
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+        <circle cx="12" cy="10" r="3" />
+      </svg>
+      {{ product.farm.name }}{% if product.location %}, {{ product.location }}{%
+      endif %} &middot;
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        width="14"
+        height="14"
+      >
+        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+      {{ product.farmer.full_name }}
     </div>
 
-    <!-- Right: Info -->
-    <div class="pd-info">
-        <h1 class="pd-info__name">{{ product.name }}</h1>
-        <div class="pd-info__farm-row">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            {{ product.farm.name }}{% if product.location %}, {{ product.location }}{% endif %}
-            &middot;
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            {{ product.farmer.full_name }}
-        </div>
-
-        <div class="pd-info__price-block">
-            <div class="pd-info__price">₱{{ "%.2f"|format(product.price) }}</div>
-            <div class="pd-info__unit">per {{ product.unit_label }}</div>
-        </div>
-
-        <!-- Stock Badge -->
-        <div class="pd-stock pd-stock--{{ product.stock_label }}">
-            {% if product.stock_label == 'in_stock' %}✓ In Stock ({{ product.stock }} available)
-            {% elif product.stock_label == 'low_stock' %}⚠ Low Stock — Only {{ product.stock }} left!
-            {% else %}✗ Out of Stock{% endif %}
-        </div>
-
-        {% if product.description %}
-        <div class="pd-desc">
-            <h3>About this Product</h3>
-            <p>{{ product.description }}</p>
-        </div>
-        {% endif %}
-
-        <!-- Add to Cart -->
-        {% if current_user.is_authenticated and current_user.role.value == 'buyer' and product.stock > 0 %}
-        <form method="post" action="{{ url_for('marketplace.cart_add') }}" class="pd-cart-form">
-            <input type="hidden" name="product_id" value="{{ product.id }}">
-            <div class="pd-qty-wrap">
-                <span class="pd-qty-label">Quantity</span>
-                <div class="pd-qty-stepper">
-                    <button type="button" class="pd-qty-btn" onclick="adjustQty(-1)">−</button>
-                    <input type="number" name="quantity" id="qtyInput" value="1" min="1" max="{{ product.stock }}" class="pd-qty-input">
-                    <button type="button" class="pd-qty-btn" onclick="adjustQty(1)">+</button>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary pd-add-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
-                Add to Cart
-            </button>
-        </form>
-        {% elif not current_user.is_authenticated %}
-        <a href="{{ url_for('auth.login') }}" class="btn btn-primary pd-add-btn">Sign In to Purchase</a>
-        {% elif product.stock <= 0 %}
-        <button class="btn btn-secondary pd-add-btn" disabled style="opacity:0.5;cursor:not-allowed;">Out of Stock</button>
-        {% endif %}
-
-        <!-- Farm Info -->
-        <div class="pd-farm-card">
-            <div class="pd-farm-card__icon">🏡</div>
-            <div>
-                <div class="pd-farm-card__name">{{ product.farm.name }}</div>
-                {% if product.location %}
-                <div class="pd-farm-card__location">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                    {{ product.location }}
-                </div>
-                {% endif %}
-                <div class="pd-farm-card__farmer">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    {{ product.farmer.full_name }}
-                </div>
-            </div>
-        </div>
-
-        <!-- Payment -->
-        <div class="pd-payment">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-            Payment: <strong>Cash on Delivery</strong>
-        </div>
+    <div class="pd-info__price-block">
+      <div class="pd-info__price">₱{{ "%.2f"|format(product.price) }}</div>
+      <div class="pd-info__unit">per {{ product.unit_label }}</div>
     </div>
+
+    <!-- Stock Badge -->
+    <div class="pd-stock pd-stock--{{ product.stock_label }}">
+      {% if product.stock_label == 'in_stock' %}✓ In Stock ({{ product.stock }}
+      available) {% elif product.stock_label == 'low_stock' %}⚠ Low Stock — Only
+      {{ product.stock }} left! {% else %}✗ Out of Stock{% endif %}
+    </div>
+
+    {% if product.description %}
+    <div class="pd-desc">
+      <h3>About this Product</h3>
+      <p>{{ product.description }}</p>
+    </div>
+    {% endif %}
+
+    <!-- Add to Cart -->
+    {% if current_user.is_authenticated and current_user.role.value == 'buyer'
+    and product.stock > 0 %}
+    <form
+      method="post"
+      action="{{ url_for('marketplace.cart_add') }}"
+      class="pd-cart-form add-to-cart-form"
+    >
+      <input type="hidden" name="product_id" value="{{ product.id }}" />
+      <div class="pd-qty-wrap">
+        <span class="pd-qty-label">Quantity</span>
+        <div class="pd-qty-stepper">
+          <button type="button" class="pd-qty-btn" onclick="adjustQty(-1)">
+            −
+          </button>
+          <input
+            type="number"
+            name="quantity"
+            id="qtyInput"
+            value="1"
+            min="1"
+            max="{{ product.stock }}"
+            class="pd-qty-input"
+          />
+          <button type="button" class="pd-qty-btn" onclick="adjustQty(1)">
+            +
+          </button>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary pd-add-btn">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          width="18"
+          height="18"
+        >
+          <circle cx="9" cy="21" r="1" />
+          <circle cx="20" cy="21" r="1" />
+          <path
+            d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"
+          />
+        </svg>
+        Add to Cart
+      </button>
+    </form>
+    {% elif not current_user.is_authenticated %}
+    <a href="{{ url_for('auth.login') }}" class="btn btn-primary pd-add-btn"
+      >Sign In to Purchase</a
+    >
+    {% elif product.stock <= 0 %}
+    <button
+      class="btn btn-secondary pd-add-btn"
+      disabled
+      style="opacity: 0.5; cursor: not-allowed"
+    >
+      Out of Stock
+    </button>
+    {% endif %}
+
+    <!-- Farm Info -->
+    <div class="pd-farm-card">
+      <div class="pd-farm-card__icon">🏡</div>
+      <div>
+        <div class="pd-farm-card__name">{{ product.farm.name }}</div>
+        {% if product.location %}
+        <div class="pd-farm-card__location">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            width="12"
+            height="12"
+          >
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+          {{ product.location }}
+        </div>
+        {% endif %}
+        <div class="pd-farm-card__farmer">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            width="12"
+            height="12"
+          >
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+          {{ product.farmer.full_name }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment -->
+    <div class="pd-payment">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        width="16"
+        height="16"
+      >
+        <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+        <line x1="1" y1="10" x2="23" y2="10" />
+      </svg>
+      Payment: <strong>Cash on Delivery</strong>
+    </div>
+  </div>
 </div>
 
 <!-- Related Products -->
 {% if related %}
 <div class="pd-related-section">
-    <h3 class="pd-related__title">You might also like</h3>
-    <div class="pd-related__grid">
-        {% for item in related %}
-        <a href="{{ url_for('marketplace.product_detail', product_id=item.id) }}" class="pd-related__card">
-            <div class="pd-related__img">
-                {% if item.category.value == 'eggs' %}🥚{% elif item.category.value == 'live_birds' %}🐔{% elif item.category.value == 'dressed' %}🍗{% else %}📦{% endif %}
-            </div>
-            <div class="pd-related__info">
-                <div class="pd-related__name">{{ item.name }}</div>
-                <div class="pd-related__price">₱{{ "%.2f"|format(item.price) }} / {{ item.unit_label }}</div>
-            </div>
-        </a>
-        {% endfor %}
-    </div>
+  <h3 class="pd-related__title">You might also like</h3>
+  <div class="pd-related__grid">
+    {% for item in related %}
+    <a
+      href="{{ url_for('marketplace.product_detail', product_id=item.id) }}"
+      class="pd-related__card"
+    >
+      <div class="pd-related__img">
+        {% if item.category.value == 'eggs' %}🥚{% elif item.category.value ==
+        'live_birds' %}🐔{% elif item.category.value == 'dressed' %}🍗{% else
+        %}📦{% endif %}
+      </div>
+      <div class="pd-related__info">
+        <div class="pd-related__name">{{ item.name }}</div>
+        <div class="pd-related__price">
+          ₱{{ "%.2f"|format(item.price) }} / {{ item.unit_label }}
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
 </div>
-{% endif %}
-
-{% endblock %}
-
-{% block extra_js %}
+{% endif %} {% endblock %} {% block extra_js %}
 <script>
-function adjustQty(delta) {
-    const input = document.getElementById('qtyInput');
+  function adjustQty(delta) {
+    const input = document.getElementById("qtyInput");
     let val = parseInt(input.value) || 1;
     val = Math.max(1, Math.min(parseInt(input.max), val + delta));
     input.value = val;
-}
+  }
 </script>
 {% endblock %}

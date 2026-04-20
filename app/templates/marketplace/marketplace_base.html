@@ -1,344 +1,1031 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Marketplace — PoultryConnect{% endblock %}</title>
-    <meta name="description" content="Shop fresh eggs, live birds, and poultry products directly from local Filipino farmers. No middlemen.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Public+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <meta
+      name="description"
+      content="Shop fresh eggs, live birds, and poultry products directly from local Filipino farmers. No middlemen."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Public+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    {% block extra_css %}{% endblock %}
 
     <style>
-        /* ═══ Design Tokens (matching landing page) ═══ */
-        :root {
-            --primary:               #0d631b;
-            --primary-container:     #2e7d32;
-            --on-primary:            #ffffff;
-            --on-primary-container:  #002106;
-            --primary-fixed:         #b7f0bb;
-            --secondary:             #75584d;
-            --tertiary:              #545652;
-            --surface:               #f4faff;
-            --surface-container-low: #e6f6ff;
-            --surface-container:     #daedf7;
-            --surface-container-high:#cde4ef;
-            --surface-container-highest:#c0dbe7;
-            --surface-container-lowest:#ffffff;
-            --surface-variant:       #c9e7f7;
-            --on-surface:            #001f2a;
-            --on-surface-variant:    #3f5059;
-            --outline:               #d9e5ec;
-            --error:                 #ba1a1a;
-            --error-container:       #ffdad6;
-            --font-display:          'Manrope', sans-serif;
-            --font-body:             'Public Sans', sans-serif;
-            --radius-sm:             8px;
-            --radius-md:             12px;
-            --radius-lg:             16px;
-            --radius-full:           9999px;
-            --shadow-card:           0 1px 4px rgba(0,31,42,0.06);
-            --shadow-ambient:        0 8px 24px rgba(0,31,42,0.06);
-            --grad-primary:          linear-gradient(135deg, #0d631b 0%, #2e7d32 50%, #1a831c 100%);
-        }
+      /* ═══ Design Tokens (matching landing page) ═══ */
+      :root {
+          --primary:               #0d631b;
+          --primary-container:     #2e7d32;
+          --on-primary:            #ffffff;
+          --on-primary-container:  #002106;
+          --primary-fixed:         #b7f0bb;
+          --secondary:             #75584d;
+          --tertiary:              #545652;
+          --surface:               #f4faff;
+          --surface-container-low: #e6f6ff;
+          --surface-container:     #daedf7;
+          --surface-container-high:#cde4ef;
+          --surface-container-highest:#c0dbe7;
+          --surface-container-lowest:#ffffff;
+          --surface-variant:       #c9e7f7;
+          --on-surface:            #001f2a;
+          --on-surface-variant:    #3f5059;
+          --outline:               #d9e5ec;
+          --error:                 #ba1a1a;
+          --error-container:       #ffdad6;
+          --font-display:          'Manrope', sans-serif;
+          --font-body:             'Public Sans', sans-serif;
+          --radius-sm:             8px;
+          --radius-md:             12px;
+          --radius-lg:             16px;
+          --radius-full:           9999px;
+          --shadow-card:           0 1px 4px rgba(0,31,42,0.06);
+          --shadow-ambient:        0 8px 24px rgba(0,31,42,0.06);
+          --grad-primary:          linear-gradient(135deg, #0d631b 0%, #2e7d32 50%, #1a831c 100%);
+      }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
-            font-family: var(--font-body);
-            background: var(--surface);
-            color: var(--on-surface);
-            min-height: 100vh;
-        }
+      body {
+          font-family: var(--font-body);
+          background: var(--surface);
+          color: var(--on-surface);
+          min-height: 100vh;
+      }
 
-        a { color: inherit; text-decoration: none; }
+      a { color: inherit; text-decoration: none; }
 
-        /* ═══ Navbar ═══ */
-        .mp-nav {
-            background: var(--surface-container-lowest);
-            border-bottom: 1px solid var(--outline);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 1px 8px rgba(0,31,42,0.04);
-        }
+      /* ═══ Navbar ═══ */
+      .mp-nav {
+          background: rgba(244, 250, 255, 0.9);
+          border-bottom: 1px solid var(--outline);
+          position: sticky;
+          top: 0;
+          z-index: 100;
+          box-shadow: 0 1px 8px rgba(0,31,42,0.04);
+          -webkit-backdrop-filter: blur(12px);
+          backdrop-filter: blur(12px);
+      }
 
-        .mp-nav__inner {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+      .mp-nav__inner {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 0 2rem;
+          height: 68px;
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+      }
 
-        .mp-nav__brand {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-        }
+      .mp-nav__brand {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-family: var(--font-display);
+          font-weight: 800;
+          font-size: 1.35rem;
+          color: var(--on-surface);
+          text-decoration: none;
+          margin-right: 0.35rem;
+          flex-shrink: 0;
+      }
 
-        .mp-nav__logo {
-            width: 36px;
-            height: 36px;
-            background: var(--grad-primary);
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
+      .mp-nav__logo-dot {
+          width: 10px;
+          height: 10px;
+          background: var(--grad-primary);
+          border-radius: var(--radius-sm);
+          display: inline-block;
+          border-radius: 50%;
+      }
 
-        .mp-nav__logo svg { width: 20px; height: 20px; }
+      .mp-nav__name {
+          font-size: 1.35rem;
+          line-height: 1;
+      }
 
-        .mp-nav__name {
-            font-family: var(--font-display);
-            font-weight: 800;
-            font-size: 1.1rem;
-            color: var(--on-surface);
-        }
+      .mp-nav__name span {
+          color: var(--primary);
+      }
 
-        .mp-nav__name span {
-            color: var(--primary);
-        }
+      /* ═══ Marketplace Shell ═══ */
+      .mp-shell {
+          display: flex;
+          min-height: 100vh;
+      }
 
-        .mp-nav__links {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
+      /* ═══ Marketplace Sidebar ═══ */
+      .mp-sidebar {
+          width: 256px;
+          background: var(--surface-container-lowest);
+          border-right: 1px solid var(--outline);
+          display: flex;
+          flex-direction: column;
+          position: sticky;
+          top: 0;
+          max-height: 100vh;
+          overflow-y: auto;
+          z-index: 99;
+          box-shadow: var(--shadow-card);
+      }
 
-        .mp-nav__link {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--on-surface-variant);
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-full);
-            transition: background 0.18s, color 0.18s;
-        }
+      .mp-sidebar.hidden {
+          display: none;
+      }
 
-        .mp-nav__link:hover {
-            background: var(--surface-container-low);
-            color: var(--on-surface);
-        }
+      .mp-sidebar-logo {
+          padding: 1.4rem 1.5rem 1.2rem;
+          border-bottom: 1px solid var(--outline);
+          flex-shrink: 0;
+      }
 
-        .mp-nav__link.active {
-            background: var(--primary-fixed);
-            color: var(--primary);
-        }
+      .mp-sidebar-logo a {
+          display: flex;
+          align-items: center;
+          gap: 0.45rem;
+          font-family: var(--font-display);
+          font-size: 1.2rem;
+          font-weight: 800;
+          color: var(--on-surface);
+          text-decoration: none;
+      }
 
-        .mp-nav__actions {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
+      .mp-sidebar-logo-dot {
+          width: 9px;
+          height: 9px;
+          background: var(--grad-primary);
+          border-radius: 50%;
+          display: inline-block;
+          flex-shrink: 0;
+      }
 
-        .mp-nav__cart {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius-sm);
-            color: var(--on-surface-variant);
-            transition: background 0.18s, color 0.18s;
-        }
+      .mp-sidebar-nav {
+          flex: 1;
+          padding: 0.5rem 0.75rem;
+          overflow-y: auto;
+      }
 
-        .mp-nav__cart:hover {
-            background: var(--surface-container-low);
-            color: var(--primary);
-        }
+      .mp-sidebar-section-label {
+          font-size: 0.68rem;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: var(--on-surface-variant);
+          padding: 1.2rem 1.25rem 0.4rem;
+          font-family: var(--font-body);
+          opacity: 0.7;
+          margin: 0;
+      }
 
-        .mp-nav__cart svg { width: 20px; height: 20px; }
+      .mp-sidebar-nav a {
+          display: flex;
+          align-items: center;
+          gap: 0.7rem;
+          padding: 0.65rem 0.85rem;
+          border-radius: var(--radius-full);
+          color: var(--on-surface-variant);
+          font-size: 0.9rem;
+          font-weight: 500;
+          font-family: var(--font-body);
+          text-decoration: none;
+          margin-bottom: 2px;
+          transition: background 0.18s, color 0.18s;
+      }
 
-        .mp-nav__cart-badge {
-            position: absolute;
-            top: 4px;
-            right: 2px;
-            background: var(--primary);
-            color: white;
-            font-size: 0.6rem;
-            font-weight: 700;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: var(--font-display);
-        }
+      .mp-sidebar-nav a:hover {
+          background: var(--surface-container-low);
+          color: var(--primary);
+      }
 
-        /* Buttons */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.55rem 1.25rem;
-            border-radius: var(--radius-full);
-            font-family: var(--font-body);
-            font-size: 0.85rem;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: all 0.18s;
-            text-decoration: none;
-            white-space: nowrap;
-        }
+      .mp-sidebar-nav a.active {
+          background: var(--primary-fixed);
+          color: var(--on-primary-container);
+          font-weight: 600;
+      }
 
-        .btn-primary {
-            background: var(--grad-primary);
-            color: white;
-            box-shadow: 0 2px 8px rgba(13,99,27,0.2);
-        }
+      .mp-sidebar-nav svg {
+          width: 18px;
+          height: 18px;
+          flex-shrink: 0;
+          stroke-width: 2;
+      }
 
-        .btn-primary:hover {
-            box-shadow: 0 4px 16px rgba(13,99,27,0.3);
-            transform: translateY(-1px);
-        }
+      .mp-sidebar-user {
+          padding: 1rem 1.25rem;
+          border-top: 1px solid var(--outline);
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          flex-shrink: 0;
+      }
 
-        .btn-secondary {
-            background: var(--surface-container-low);
-            color: var(--on-surface);
-            border: 1.5px solid var(--outline);
-        }
+      .mp-sidebar-user-avatar {
+          width: 38px;
+          height: 38px;
+          border-radius: 50%;
+          background: var(--grad-primary);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-family: var(--font-display);
+          font-size: 0.9rem;
+          font-weight: 700;
+          color: white;
+          flex-shrink: 0;
+      }
 
-        .btn-secondary:hover {
-            background: var(--surface-container);
-        }
+      .mp-sidebar-user-info {
+          flex: 1;
+          min-width: 0;
+      }
 
-        .btn-sm { padding: 0.4rem 0.85rem; font-size: 0.8rem; }
-        .btn-lg { padding: 0.7rem 1.75rem; font-size: 0.92rem; }
+      .mp-sidebar-user-name {
+          font-weight: 600;
+          color: var(--on-surface);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+      }
 
-        /* ═══ Container ═══ */
-        .mp-container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
+      .mp-sidebar-user-role {
+          font-size: 0.72rem;
+          color: var(--primary);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-weight: 600;
+          text-transform: capitalize;
+      }
 
-        /* ═══ Flash messages ═══ */
-        .mp-flash-wrap {
-            max-width: 1280px;
-            margin: 1rem auto 0;
-            padding: 0 2rem;
-        }
+      .mp-sidebar-logout {
+          width: 32px;
+          height: 32px;
+          border-radius: var(--radius-sm);
+          background: transparent;
+          border: none;
+          color: var(--on-surface-variant);
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: background 0.18s, color 0.18s;
+          flex-shrink: 0;
+          padding: 0;
+      }
 
-        .mp-flash {
-            padding: 0.75rem 1.25rem;
-            border-radius: var(--radius-sm);
-            font-size: 0.85rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
+      .mp-sidebar-logout:hover {
+          background: var(--error-container);
+          color: var(--error);
+      }
 
-        .mp-flash.success { background: #e8f5e9; color: #1b5e20; }
-        .mp-flash.error   { background: #ffdad6; color: #ba1a1a; }
-        .mp-flash.info    { background: #e3f2fd; color: #0d47a1; }
+      .mp-sidebar-logout svg {
+          width: 18px;
+          height: 18px;
+      }
 
-        /* ═══ Footer ═══ */
-        .mp-footer {
-            background: var(--on-surface);
-            color: rgba(255,255,255,0.6);
-            text-align: center;
-            padding: 2rem;
-            font-size: 0.82rem;
-            margin-top: 4rem;
-        }
+      .mp-main-with-sidebar {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+      }
 
-        .mp-footer strong { color: white; }
+      .mp-content-wrapper {
+          flex: 1;
+          overflow-y: auto;
+      }
 
-        /* ═══ Mobile nav ═══ */
-        .mp-nav__toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--on-surface);
-            cursor: pointer;
-            padding: 0.5rem;
-        }
+      @media (max-width: 1024px) {
+          .mp-sidebar {
+              display: none;
+          }
+          .mp-shell {
+              display: block;
+          }
+      }
 
-        .mp-nav__toggle svg { width: 24px; height: 24px; }
+      .mp-nav__links {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+          flex-shrink: 0;
+      }
 
-        @media (max-width: 768px) {
-            .mp-nav__inner { padding: 0 1rem; }
-            .mp-container { padding: 0 1rem; }
-            .mp-nav__links { display: none; }
-            .mp-nav__toggle { display: flex; }
-        }
+      .mp-nav__search {
+          display: flex;
+          align-items: center;
+          gap: 0.45rem;
+          background: var(--surface-container-low);
+          border: 1px solid var(--outline);
+          border-radius: var(--radius-full);
+          padding: 0.25rem;
+          flex: 1;
+          max-width: 460px;
+          min-width: 260px;
+          margin-left: auto;
+      }
 
-        {% block extra_style %}{% endblock %}
+      .mp-nav__search input {
+          width: 100%;
+          border: none;
+          background: transparent;
+          color: var(--on-surface);
+          font-size: 0.84rem;
+          font-family: var(--font-body);
+          padding: 0.35rem 0.65rem;
+      }
+
+      .mp-nav__search input:focus {
+          outline: none;
+      }
+
+      .mp-nav__search button {
+          border: none;
+          background: var(--grad-primary);
+          color: white;
+          border-radius: var(--radius-full);
+          padding: 0.45rem 0.8rem;
+          font-size: 0.78rem;
+          font-weight: 700;
+          cursor: pointer;
+      }
+
+      .mp-nav__link {
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: var(--on-surface-variant);
+          padding: 0.5rem 1rem;
+          border-radius: var(--radius-full);
+          transition: background 0.18s, color 0.18s;
+      }
+
+      .mp-nav__link:hover {
+          background: var(--surface-container-low);
+          color: var(--on-surface);
+      }
+
+      .mp-nav__link.active {
+          background: var(--primary-fixed);
+          color: var(--primary);
+      }
+
+      .mp-nav__actions {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          margin-left: 0.25rem;
+          flex-shrink: 0;
+      }
+
+      .mp-nav__cart {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 40px;
+          height: 40px;
+          border-radius: var(--radius-sm);
+          color: var(--on-surface-variant);
+          transition: background 0.18s, color 0.18s;
+      }
+
+      .mp-nav__cart:hover {
+          background: var(--surface-container-low);
+          color: var(--primary);
+      }
+
+      .mp-nav__cart svg { width: 20px; height: 20px; }
+
+      .mp-nav__cart-badge {
+          position: absolute;
+          top: 4px;
+          right: 2px;
+          background: var(--primary);
+          color: white;
+          font-size: 0.6rem;
+          font-weight: 700;
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-family: var(--font-display);
+      }
+
+      /* Buttons */
+      .btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.55rem 1.25rem;
+          border-radius: var(--radius-full);
+          font-family: var(--font-body);
+          font-size: 0.85rem;
+          font-weight: 600;
+          border: none;
+          cursor: pointer;
+          transition: all 0.18s;
+          text-decoration: none;
+          white-space: nowrap;
+      }
+
+      .btn-primary {
+          background: var(--grad-primary);
+          color: white;
+          box-shadow: 0 2px 8px rgba(13,99,27,0.2);
+      }
+
+      .btn-primary:hover {
+          box-shadow: 0 4px 16px rgba(13,99,27,0.3);
+          transform: translateY(-1px);
+      }
+
+      .btn-secondary {
+          background: var(--surface-container-low);
+          color: var(--on-surface);
+          border: 1.5px solid var(--outline);
+      }
+
+      .btn-secondary:hover {
+          background: var(--surface-container);
+      }
+
+      .btn-sm { padding: 0.4rem 0.85rem; font-size: 0.8rem; }
+      .btn-lg { padding: 0.7rem 1.75rem; font-size: 0.92rem; }
+
+      /* ═══ Container ═══ */
+      .mp-container {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 0 2rem;
+      }
+
+      /* ═══ Flash messages ═══ */
+      .mp-flash-wrap {
+          max-width: 1280px;
+          margin: 1rem auto 0;
+          padding: 0 2rem;
+      }
+
+      .mp-flash {
+          padding: 0.75rem 1.25rem;
+          border-radius: var(--radius-sm);
+          font-size: 0.85rem;
+          font-weight: 500;
+          margin-bottom: 0.5rem;
+      }
+
+      .mp-flash.success { background: #e8f5e9; color: #1b5e20; }
+      .mp-flash.error   { background: #ffdad6; color: #ba1a1a; }
+      .mp-flash.info    { background: #e3f2fd; color: #0d47a1; }
+
+      .mp-toast {
+          position: fixed;
+          right: 1.2rem;
+          bottom: 1.2rem;
+          z-index: 250;
+          min-width: 240px;
+          max-width: 360px;
+          padding: 0.75rem 1rem;
+          border-radius: var(--radius-sm);
+          box-shadow: var(--shadow-ambient);
+          font-size: 0.85rem;
+          font-weight: 600;
+          opacity: 0;
+          transform: translateY(8px);
+          pointer-events: none;
+          transition: opacity 0.2s ease, transform 0.2s ease;
+      }
+
+      .mp-toast.is-visible {
+          opacity: 1;
+          transform: translateY(0);
+      }
+
+      .mp-toast.success { background: #e8f5e9; color: #1b5e20; }
+      .mp-toast.error { background: #ffdad6; color: #ba1a1a; }
+
+      /* ═══ Footer ═══ */
+      .mp-footer {
+          background: var(--on-surface);
+          color: rgba(255,255,255,0.6);
+          text-align: center;
+          padding: 2rem;
+          font-size: 0.82rem;
+          margin-top: 4rem;
+      }
+
+      .mp-footer strong { color: white; }
+
+      /* ═══ Mobile nav ═══ */
+      .mp-nav__toggle {
+          display: none;
+          background: none;
+          border: none;
+          color: var(--on-surface);
+          cursor: pointer;
+          padding: 0.5rem;
+      }
+
+      .mp-nav__toggle svg { width: 24px; height: 24px; }
+
+      @media (max-width: 768px) {
+          .mp-nav__inner { padding: 0 1rem; }
+          .mp-container { padding: 0 1rem; }
+          .mp-nav__links { display: none; }
+          .mp-nav__search { display: none; }
+          .mp-nav__toggle { display: flex; }
+          .mp-nav__name { font-size: 1.12rem; }
+          .mp-sidebar { position: fixed; top: 0; left: 0; height: 100vh; z-index: 99; }
+          .mp-sidebar.hidden { display: none; }
+      }
+
+      /* Extra styles from child templates */
+      {% block extra_style %}{% endblock %}
     </style>
-</head>
-<body>
-
-    <!-- ═══ Navigation Bar ═══ -->
-    <nav class="mp-nav">
-        <div class="mp-nav__inner">
-            <a href="{{ url_for('index') }}" class="mp-nav__brand">
-                <div class="mp-nav__logo">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-                </div>
-                <div class="mp-nav__name">Poultry<span>Connect</span></div>
-            </a>
-
-            <div class="mp-nav__links">
-                <a href="{{ url_for('index') }}" class="mp-nav__link">Home</a>
-                <a href="{{ url_for('marketplace.index') }}" class="mp-nav__link {% if request.endpoint == 'marketplace.index' %}active{% endif %}">Shop</a>
-                {% if current_user.is_authenticated %}
-                    {% if current_user.role.value == 'farmer' %}
-                    <a href="{{ url_for('marketplace.manage') }}" class="mp-nav__link {% if 'manage' in request.endpoint %}active{% endif %}">My Products</a>
-                    <a href="{{ url_for('dashboard.farmer') }}" class="mp-nav__link">Dashboard</a>
-                    {% elif current_user.role.value == 'buyer' %}
-                    <a href="{{ url_for('marketplace.orders') }}" class="mp-nav__link {% if request.endpoint == 'marketplace.orders' %}active{% endif %}">My Orders</a>
-                    {% endif %}
-                {% endif %}
-            </div>
-
-            <div class="mp-nav__actions">
-                {% if current_user.is_authenticated and current_user.role.value == 'buyer' %}
-                <a href="{{ url_for('marketplace.cart') }}" class="mp-nav__cart" title="Shopping Cart">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
-                    {% if cart_count > 0 %}
-                    <span class="mp-nav__cart-badge">{{ cart_count }}</span>
-                    {% endif %}
-                </a>
-                {% endif %}
-
-                {% if current_user.is_authenticated %}
-                <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary btn-sm">Sign Out</a>
-                {% else %}
-                <a href="{{ url_for('auth.login') }}" class="btn btn-secondary btn-sm">Sign In</a>
-                <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-sm">Get Started</a>
-                {% endif %}
-            </div>
-
-            <button class="mp-nav__toggle" onclick="document.querySelector('.mp-nav__links').style.display=document.querySelector('.mp-nav__links').style.display==='flex'?'none':'flex'">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-            </button>
+  </head>
+  <body>
+    <!-- ═══ Marketplace Shell ═══ -->
+    <div class="mp-shell">
+      <!-- ═══ Marketplace Sidebar ═══ -->
+      <aside class="mp-sidebar">
+        <div class="mp-sidebar-logo">
+          <a href="{{ url_for('index') }}" title="Back to PoultryConnect home">
+            <span class="mp-sidebar-logo-dot"></span>
+            PoultryConnect
+          </a>
         </div>
-    </nav>
 
-    <!-- ═══ Flash Messages ═══ -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        <div class="mp-flash-wrap">
-            {% for category, message in messages %}
-            <div class="mp-flash {{ category }}">{{ message }}</div>
-            {% endfor %}
+        <nav class="mp-sidebar-nav">
+          <p class="mp-sidebar-section-label">Overview</p>
+          <a
+            href="{{ url_for('index') }}"
+            class="{% if request.endpoint == 'index' %}active{% endif %}"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+            Home
+          </a>
+
+          <p class="mp-sidebar-section-label">Market</p>
+          <a
+            href="{{ url_for('marketplace.index') }}"
+            class="{% if request.endpoint == 'marketplace.index' %}active{% endif %}"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <path d="M16 10a4 4 0 01-8 0" />
+            </svg>
+            Marketplace
+          </a>
+
+          {% if current_user.is_authenticated and current_user.role.value ==
+          'farmer' %}
+          <p class="mp-sidebar-section-label">My Business</p>
+          <a
+            href="{{ url_for('marketplace.manage') }}"
+            class="{% if 'manage' in request.endpoint %}active{% endif %}"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M20 14.66V20a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2h5.34"
+              />
+              <polygon points="18 2 22 6 12 16 8 16 8 12 18 2" />
+            </svg>
+            My Products
+          </a>
+          <a
+            href="{{ url_for('marketplace.farmer_orders') }}"
+            class="{% if request.endpoint == 'marketplace.farmer_orders' %}active{% endif %}"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+            </svg>
+            Incoming Orders
+          </a>
+          {% elif current_user.is_authenticated and current_user.role.value ==
+          'buyer' %}
+          <p class="mp-sidebar-section-label">My Purchases</p>
+          <a
+            href="{{ url_for('marketplace.cart') }}"
+            class="{% if request.endpoint == 'marketplace.cart' %}active{% endif %}"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="9" cy="21" r="1" />
+              <circle cx="20" cy="21" r="1" />
+              <path
+                d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"
+              />
+            </svg>
+            My Cart {% if cart_count is defined and cart_count > 0 %}
+            <span
+              style="
+                background: var(--primary);
+                color: white;
+                border-radius: 10px;
+                padding: 2px 6px;
+                font-size: 0.75rem;
+                margin-left: auto;
+              "
+              >{{ cart_count }}</span
+            >
+            {% endif %}
+          </a>
+          <a
+            href="{{ url_for('marketplace.orders') }}"
+            class="{% if request.endpoint in ['marketplace.orders','marketplace.order_detail'] %}active{% endif %}"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+            </svg>
+            My Orders
+          </a>
+          {% endif %}
+
+          <p class="mp-sidebar-section-label">Account</p>
+          {% if current_user.is_authenticated %}
+          <a
+            href="#"
+            onclick="
+              alert('Profile settings coming soon');
+              return false;
+            "
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            Profile
+          </a>
+          <a
+            href="#"
+            onclick="
+              alert('Security settings coming soon');
+              return false;
+            "
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0110 0v4" />
+            </svg>
+            Security
+          </a>
+          {% else %}
+          <a href="{{ url_for('auth.login') }}">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4" />
+              <polyline points="10 17 15 12 10 7" />
+              <line x1="15" y1="12" x2="3" y2="12" />
+            </svg>
+            Sign In
+          </a>
+          {% endif %}
+        </nav>
+
+        <!-- Sidebar User Info -->
+        {% if current_user.is_authenticated %}
+        <div class="mp-sidebar-user">
+          <div class="mp-sidebar-user-avatar">
+            {{ current_user.first_name[0]|upper if current_user.first_name else
+            current_user.username[0]|upper }}
+          </div>
+          <div class="mp-sidebar-user-info">
+            <div class="mp-sidebar-user-name">{{ current_user.full_name }}</div>
+            <div class="mp-sidebar-user-role">
+              {{ current_user.role.value|replace('_',' ')|title }}
+            </div>
+          </div>
+          <a
+            href="{{ url_for('auth.logout') }}"
+            class="mp-sidebar-logout"
+            title="Sign out"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+          </a>
+        </div>
+        {% else %}
+        <div
+          class="mp-sidebar-user"
+          style="
+            flex-direction: column;
+            gap: 0.5rem;
+            border-top: none;
+            padding-bottom: 2rem;
+          "
+        >
+          <a
+            href="{{ url_for('auth.login') }}"
+            class="btn btn-secondary btn-sm"
+            style="width: 100%; justify-content: center"
+            >Sign In</a
+          >
+          <a
+            href="{{ url_for('auth.register') }}"
+            class="btn btn-primary btn-sm"
+            style="width: 100%; justify-content: center"
+            >Get Started</a
+          >
         </div>
         {% endif %}
-    {% endwith %}
+      </aside>
 
-    <!-- ═══ Page Content ═══ -->
-    {% block content %}{% endblock %}
+      <!-- ═══ Main Content Area ═══ -->
+      <div class="mp-main-with-sidebar">
+        <!-- ═══ Navigation Bar ═══ -->
+        <nav class="mp-nav">
+          <div class="mp-nav__inner" style="padding-left: 1rem">
+            {% if request.endpoint == 'marketplace.index' %}
+            <form
+              method="get"
+              action="{{ url_for('marketplace.index') }}"
+              class="mp-nav__search"
+              role="search"
+              style="margin-left: 0; max-width: 600px"
+            >
+              <input
+                type="text"
+                name="q"
+                value="{{ request.args.get('q', '') }}"
+                placeholder="Search products, farms..."
+                aria-label="Search marketplace products"
+              />
+              <input
+                type="hidden"
+                name="category"
+                value="{{ request.args.get('category', '') }}"
+              />
+              <input
+                type="hidden"
+                name="sort"
+                value="{{ request.args.get('sort', 'newest') }}"
+              />
+              <button type="submit">Search</button>
+            </form>
+            {% else %}
+            <div style="flex: 1"></div>
+            {% endif %}
 
-    <!-- ═══ Footer ═══ -->
-    <footer class="mp-footer">
-        <strong>PoultryConnect</strong> — Smart Farming, Better Living &copy; 2026
-    </footer>
+            <div class="mp-nav__actions" style="margin-left: auto">
+              <button
+                class="mp-nav__toggle"
+                title="Toggle sidebar"
+                aria-label="Toggle sidebar"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <line x1="3" y1="12" x2="21" y2="12" />
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </nav>
+
+        <!-- ═══ Flash Messages ═══ -->
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %}
+        <div class="mp-flash-wrap">
+          {% for category, message in messages %}
+          <div class="mp-flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %} {% endwith %}
+
+        <!-- ═══ Page Content ═══ -->
+        <div class="mp-content-wrapper">{% block content %}{% endblock %}</div>
+
+        <!-- ═══ Footer ═══ -->
+        <footer class="mp-footer">
+          <strong>PoultryConnect</strong> — Smart Farming, Better Living &copy;
+          2026
+        </footer>
+      </div>
+    </div>
 
     {% block extra_js %}{% endblock %}
-</body>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const cartForms = document.querySelectorAll(".add-to-cart-form");
+        let toastTimer;
+
+        cartForms.forEach((form) => {
+          const qtyControl = form.querySelector(".shop-qty");
+          const qtyInput = form.querySelector(".js-qty-input, #qtyInput");
+
+          if (qtyControl && qtyInput) {
+            const valueNode = qtyControl.querySelector(".shop-qty__value");
+            const min = parseInt(
+              qtyControl.dataset.min || qtyInput.min || "1",
+              10,
+            );
+            const max = parseInt(
+              qtyControl.dataset.max || qtyInput.max || "999",
+              10,
+            );
+
+            const syncQty = (nextValue) => {
+              const safeValue = Math.max(min, Math.min(max, nextValue));
+              qtyInput.value = safeValue;
+              if (valueNode) {
+                valueNode.textContent = safeValue;
+              }
+            };
+
+            qtyControl.querySelectorAll("[data-qty-action]").forEach((btn) => {
+              btn.addEventListener("click", () => {
+                const direction = btn.dataset.qtyAction === "increase" ? 1 : -1;
+                syncQty((parseInt(qtyInput.value || "1", 10) || 1) + direction);
+              });
+            });
+
+            syncQty(parseInt(qtyInput.value || "1", 10) || 1);
+          }
+        });
+
+        cartForms.forEach((form) => {
+          form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = "Adding...";
+
+            fetch(this.action, {
+              method: "POST",
+              body: formData,
+              headers: {
+                "X-Requested-With": "XMLHttpRequest",
+              },
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+
+                if (data.status === "success") {
+                  // Update cart count badge
+                  const cartLink = document.querySelector(".mp-nav__cart");
+                  if (cartLink && data.cart_count !== undefined) {
+                    let badge = cartLink.querySelector(".mp-nav__cart-badge");
+                    if (!badge && data.cart_count > 0) {
+                      badge = document.createElement("span");
+                      badge.className = "mp-nav__cart-badge";
+                      cartLink.appendChild(badge);
+                    }
+                    if (badge) {
+                      badge.textContent = data.cart_count;
+                      if (data.cart_count === 0) {
+                        badge.remove();
+                      }
+                    }
+                  }
+
+                  showToast(data.message, "success");
+                } else {
+                  showToast(data.message || "Error adding to cart.", "error");
+                }
+              })
+              .catch((error) => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+                showToast("An error occurred. Please try again.", "error");
+                console.error("Error:", error);
+              });
+          });
+        });
+
+        function showToast(message, type) {
+          let toast = document.querySelector(".mp-toast");
+
+          if (!toast) {
+            toast = document.createElement("div");
+            toast.className = "mp-toast";
+            document.body.appendChild(toast);
+          }
+
+          toast.className = `mp-toast ${type}`;
+          toast.textContent = message;
+          toast.classList.add("is-visible");
+
+          if (toastTimer) {
+            clearTimeout(toastTimer);
+          }
+
+          toastTimer = setTimeout(() => {
+            toast.classList.remove("is-visible");
+          }, 1800);
+        }
+      });
+    </script>
+  </body>
 </html>

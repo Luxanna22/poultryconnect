@@ -1,14 +1,14 @@
-{% extends "dashboard_base.html" %}
+{% extends "marketplace/marketplace_base.html" %}
 
 {% block title %}Shopping Cart — PoultryConnect{% endblock %}
-{% block page_title %}Shopping Cart{% endblock %}
-{% block breadcrumb %}PoultryConnect / <a href="{{ url_for('marketplace.index') }}" style="color:var(--primary);">Marketplace</a> / Cart{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/marketplace.css') }}">
 {% endblock %}
 
 {% block content %}
+<div class="mp-container" style="padding: 2rem 1.5rem; max-width: 1200px; margin: 0 auto;">
+    <h1 style="font-family: var(--font-display); font-size: 1.8rem; font-weight: 800; color: var(--on-surface); margin-bottom: 1.5rem;">Shopping Cart</h1>
 
 {% if cart_items %}
 <div class="cart-layout">
@@ -106,5 +106,6 @@
     <a href="{{ url_for('marketplace.index') }}" class="btn btn-primary">Browse Marketplace</a>
 </div>
 {% endif %}
+</div>
 
 {% endblock %}
