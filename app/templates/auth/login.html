@@ -37,9 +37,12 @@
         >
     </div>
 
-    <div class="remember-row">
-        <input type="checkbox" id="remember" name="remember">
-        <label for="remember">Keep me signed in</label>
+    <div class="remember-row" style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <input type="checkbox" id="remember" name="remember">
+            <label for="remember">Keep me signed in</label>
+        </div>
+        <a href="{{ url_for('auth.reset_password_request') }}" style="font-size: 0.9rem; color: var(--primary-color, #2b6cb0); text-decoration: none;">Forgot Password?</a>
     </div>
 
     <button type="submit" class="btn-auth">Sign In to PoultryConnect</button>

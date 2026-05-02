@@ -15,9 +15,10 @@ Good practices applied:
 import enum
 from datetime import datetime
 from app import db, login
+from flask import current_app
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from itsdangerous import URLSafeTimedSerializer as Serializer
 
 # ─────────────────────────────────────────
 # ENUMS
@@ -79,6 +80,19 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password: str) -> bool:
         return check_password_hash(self.password_hash, password)
+
+    def get_reset_password_token(self):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        return s.dumps({'user_id': self.id})
+
+    @staticmethod
+    def verify_reset_password_token(token, expires_in=3600):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            user_id = s.loads(token, max_age=expires_in)['user_id']
+        except:
+            return None
+        return User.query.get(user_id)
 
     @property
     def full_name(self) -> str:

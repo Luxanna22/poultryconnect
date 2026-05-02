@@ -427,8 +427,14 @@
 }
 
 .mp-empty__icon svg {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
+}
+
+.mp-empty__body {
+    max-width: 360px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .mp-empty h3 {
@@ -444,11 +450,6 @@
     margin-bottom: 2rem;
     color: var(--on-surface-variant);
     font-family: var(--font-body);
-}
-
-max-width: 360px;
-margin-left: auto;
-margin-right: auto;
 }
 
 

@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from app import db
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, UserRole
+from app.email import send_password_reset_email
 from urllib.parse import urlparse
 
 auth_bp = Blueprint('auth', __name__)
@@ -131,3 +132,47 @@ def register():
         return redirect(url_for('auth.login'))
 
     return render_template('auth/register.html', title='Create Account', form_data={})
+
+@auth_bp.route('/reset_password_request', methods=['GET', 'POST'])
+def reset_password_request():
+    if current_user.is_authenticated:
+        return redirect(_role_redirect(current_user))
+    if request.method == 'POST':
+        email = request.form.get('email', '').strip().lower()
+        user = User.query.filter_by(email=email).first()
+        if user:
+            send_password_reset_email(user)
+        flash('Check your email for the instructions to reset your password', 'success')
+        return redirect(url_for('auth.login'))
+    return render_template('auth/reset_password_request.html', title='Reset Password')
+
+@auth_bp.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(_role_redirect(current_user))
+    user = User.verify_reset_password_token(token)
+    if not user:
+        flash('The password reset link is invalid or has expired.', 'error')
+        return redirect(url_for('index'))
+    if request.method == 'POST':
+        password = request.form.get('password', '').strip()
+        confirm_pw = request.form.get('confirm_password', '').strip()
+        
+        errors = []
+        if not password or not confirm_pw:
+            errors.append('All fields are required.')
+        if password != confirm_pw:
+            errors.append('Passwords do not match.')
+        if len(password) < 8:
+            errors.append('Password must be at least 8 characters.')
+            
+        if errors:
+            for err in errors:
+                flash(err, 'error')
+            return render_template('auth/reset_password.html', title='Set New Password', token=token)
+            
+        user.set_password(password)
+        db.session.commit()
+        flash('Your password has been reset.', 'success')
+        return redirect(url_for('auth.login'))
+    return render_template('auth/reset_password.html', title='Set New Password', token=token)

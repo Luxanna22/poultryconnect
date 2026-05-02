@@ -13,3 +13,11 @@ class Config:
     # Other settings
     FLASK_APP = "run.py"
     FLASK_ENV = os.environ.get('FLASK_ENV') or 'development'
+
+    # Mail settings
+    MAIL_SERVER = os.environ.get('MAIL_SERVER') or 'localhost'
+    MAIL_PORT = int(os.environ.get('MAIL_PORT') or 8025)
+    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'true').lower() in ['true', 'on', '1']
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+    ADMINS = [os.environ.get('MAIL_USERNAME') or 'admin@poultryconnect.com']
