@@ -55,7 +55,7 @@ class User(UserMixin, db.Model):
     email         = db.Column(db.String(120), nullable=False, unique=True, index=True)
     password_hash = db.Column(db.String(256), nullable=False)
     role          = db.Column(
-                       db.Enum(UserRole),
+                       db.Enum(UserRole, values_callable=lambda enum_cls: [e.value for e in enum_cls]),
                        nullable=False,
                        default=UserRole.FARMER,
                        index=True
@@ -201,7 +201,7 @@ class Expense(db.Model):
 
     expense_date = db.Column(db.Date, nullable=False, index=True)
     category     = db.Column(
-                      db.Enum(ExpenseCategory),
+                      db.Enum(ExpenseCategory, values_callable=lambda enum_cls: [e.value for e in enum_cls]),
                       nullable=False,
                       default=ExpenseCategory.OTHER,
                       index=True
@@ -258,13 +258,13 @@ class Product(db.Model):
     name          = db.Column(db.String(150), nullable=False)
     description   = db.Column(db.Text)
     category      = db.Column(
-                       db.Enum(ProductCategory),
+                       db.Enum(ProductCategory, values_callable=lambda enum_cls: [e.value for e in enum_cls]),
                        nullable=False,
                        default=ProductCategory.EGGS,
                        index=True
                    )
     unit          = db.Column(
-                       db.Enum(ProductUnit),
+                       db.Enum(ProductUnit, values_callable=lambda enum_cls: [e.value for e in enum_cls]),
                        nullable=False,
                        default=ProductUnit.PIECE
                    )
@@ -317,7 +317,7 @@ class Order(db.Model):
 
     total_amount     = db.Column(db.Numeric(12, 2), nullable=False, default=0)
     status           = db.Column(
-                          db.Enum(OrderStatus),
+                          db.Enum(OrderStatus, values_callable=lambda enum_cls: [e.value for e in enum_cls]),
                           nullable=False,
                           default=OrderStatus.PENDING,
                           index=True
